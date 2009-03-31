@@ -33,6 +33,17 @@ our %EXPORT_TAGS = ( all => \@EXPORT_OK );
 
 =head1 FUNCTIONS
 
+=head2 is_pseudoprime($n,$b)
+
+Returns true if $n is a base $b pseudoprime, otherwise false.
+The default base of 2 is used if no base is given. Base 2 pseudoprimes are often called Fermat pseudoprimes.
+
+    if ( is_pseudoprime($n,$b) ) {
+        ...
+    } else {
+        ...
+    }
+
 =cut
 
 sub is_pseudoprime
