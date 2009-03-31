@@ -44,11 +44,12 @@ sub is_pseudoprime
     $n      = Math::BigInt->new("$n");
 
     # if $n and $base are not coprime, than $base is a factor of $n
-    $base > 2 && ( Math::BigInt::bgcd($n,$base) != 1 ) && return 0;
+    # $base > 2 && ( Math::BigInt::bgcd($n,$base) != 1 ) && return 0;
 
     my $m   = $n->copy->bdec;            # m = n - 1
-    my $mod = $base->bmodpow($m,$n);     # (base**exp) (mod n)
-    return $mod == 1 ;
+    my $mod = $base->copy;
+    $mod->bmodpow($m,$n);     # (base**exp) (mod n)
+    return $mod == 1;
 }
 
 =head1 AUTHOR
