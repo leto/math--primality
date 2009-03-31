@@ -1,16 +1,20 @@
 #!perl -T
 
-use Test::More tests => 48;
+use Test::More tests => 51;
 
 use Math::Primality qw/ is_pseudoprime /;
 
 
-ok( is_pseudoprime(7,2) , '7 is a base-2 psp');
-ok( is_pseudoprime(7) , 'is_psp defaults to base 2');
-ok(!is_pseudoprime(2), '2 is not a psp' );
-ok(!is_pseudoprime(4), '4 is not a psp' );
+ok( is_pseudoprime(7,2) , '7 is a psp(2)');
+ok( is_pseudoprime(7) , 'is_pseudoprime defaults to base 2');
+ok(!is_pseudoprime(0), '0 is not a psp(2)');
+ok(!is_pseudoprime(1), '1 is not a psp(2)');
+ok(!is_pseudoprime(2), '2 is not a psp(2)' );
+ok( is_pseudoprime(3), '3 is a psp(2)' );
+ok(!is_pseudoprime(4), '4 is not a psp(2)' );
 
 # These are the 10 largest Carmichael numbers <= 1e15
+# from http://oldweb.cecm.sfu.ca/pseudoprime/
 my @carmichael = qw/
                     999838193331601
                     999840927672001
@@ -23,7 +27,7 @@ my @carmichael = qw/
                     999919121100481
                     999922265173441
                     /;
-# non of the above numbers have these as factors
+# none of the above numbers have these as factors
 my @bases = (2, 3, 5, 23);
 for my $base (@bases) {
     map {
