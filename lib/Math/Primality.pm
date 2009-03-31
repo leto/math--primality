@@ -1,11 +1,13 @@
 package Math::Primality;
 
+use Math::BigInt qw/bgcd/;
+use base 'Exporter';
 use warnings;
 use strict;
 
 =head1 NAME
 
-Math::Primality - The great new Math::Primality!
+Math::Primality - Various Primality Algorithms
 
 =head1 VERSION
 
@@ -15,37 +17,38 @@ Version 0.01
 
 our $VERSION = '0.01';
 
+our @EXPORT_OK = qw/is_pseudoprime/;
+
+our %EXPORT_TAGS = ( all => \@EXPORT_OK );
 
 =head1 SYNOPSIS
 
-Quick summary of what the module does.
-
-Perhaps a little code snippet.
-
     use Math::Primality;
+    use Math::BigInt;
 
-    my $foo = Math::Primality->new();
-    ...
+    my $t1 = is_pseudoprime($x,$base);
+    my $t2 = is_lucas_pseudoprime($x);
 
 =head1 EXPORT
 
-A list of functions that can be exported.  You can delete this section
-if you don't export anything, such as for a purely object-oriented module.
-
 =head1 FUNCTIONS
 
-=head2 function1
-
 =cut
 
-sub function1 {
-}
+sub is_pseudoprime
+{
+    my ($n, $base) = @_;
+    # force to BigInts for now
+    $base ||= 2;
+    $base   = Math::BigInt->new("$base");
+    $n      = Math::BigInt->new("$n");
 
-=head2 function2
+    # if $n and $base are not coprime, than $base is a factor of $n
+    $base > 2 && ( Math::BigInt::bgcd($n,$base) != 1 ) && return 0;
 
-=cut
-
-sub function2 {
+    my $m   = $n->copy->bdec;            # m = n - 1
+    my $mod = $base->bmodpow($m,$n);     # (base**exp) (mod n)
+    return $mod == 1 ;
 }
 
 =head1 AUTHOR
