@@ -1,6 +1,6 @@
 #!perl -T
 
-use Test::More tests => 51;
+use Test::More tests => 71;
 
 use Math::Primality qw/ is_pseudoprime /;
 
@@ -38,4 +38,13 @@ for my $base (@bases) {
 ok(!is_pseudoprime( 999895175363161, 7 ), ' 7 is a factor of 999895175363161 and hence it is not a psp(7)');
 
 map {
-ok(!is_pseudoprime( $_ , 13 ), "13 is a factor of $_ and hence it is not a psp(13)") } (999838193331601,999878556600001,999902676805201) ;
+    ok(!is_pseudoprime( $_ , 13 ), "13 is a factor of $_ and hence it is not a psp(13)") } (999838193331601,999878556600001,999902676805201) ;
+
+# First 20 psp(2)'s
+map {
+    ok( is_pseudoprime($_), "$_ is a psp(2)" );
+} qw/
+ 341 561 645 1105 1387 1729 1905 2047
+ 2465 2701 2821 3277 4033 4369 4371
+ 4681 5461 6601 7957 8321
+/;
