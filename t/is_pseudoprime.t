@@ -1,6 +1,6 @@
 #!perl -T
 
-use Test::More tests => 44;
+use Test::More tests => 48;
 
 use Math::Primality qw/ is_pseudoprime /;
 
@@ -30,3 +30,8 @@ for my $base (@bases) {
         ok( is_pseudoprime($_,$base), "$_ is a Carmicheal number and hence a psp($base)");
     } @carmichael;
 };
+
+ok(!is_pseudoprime( 999895175363161, 7 ), ' 7 is a factor of 999895175363161 and hence it is not a psp(7)');
+
+map {
+ok(!is_pseudoprime( $_ , 13 ), "13 is a factor of $_ and hence it is not a psp(13)") } (999838193331601,999878556600001,999902676805201) ;
