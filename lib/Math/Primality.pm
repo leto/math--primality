@@ -76,6 +76,9 @@ sub is_strong_pseudoprime
     $base ||= 2;
     $base   = Math::BigInt->new("$base");
     $n      = Math::BigInt->new("$n");
+    my $m   = $n->copy->bdec();
+
+    # need access to mpz_scan1
 
     return 0;
 }

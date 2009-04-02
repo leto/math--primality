@@ -10,6 +10,20 @@
 
 ** this will be is_strong_lucas_pseudoprime()
 
+* Port iBPSW from spec/bpsw/bpsw1.c
+
+** it is basically trial division, followed by a is_strong_pseudoprime(),
+    followed by a is_strong_lucas_pseudoprime()
+
+** there are many optimizations to made for small arguments
+
+** this will be is_prime(), to replace Math::PARI::is_prime()
+
+** it may take optional arguments for power-users, but we want to have a really simple function for people to call
+
+    is_prime($x) ? foo() : bar();
+
+
 =head2 Already Done
 
 * implement base b pseudoprime test, a.k.a n is in psp(b)
