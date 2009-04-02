@@ -63,6 +63,22 @@ sub is_pseudoprime
     return $mod == 1;
 }
 
+=head2 is_strong_pseudoprime($n,$b)
+
+Returns true if $n is a base $b strong pseudoprime, false otherwise.
+
+=cut
+
+sub is_strong_pseudoprime
+{
+    my ($n, $base) = @_;
+    # force to BigInts for now
+    $base ||= 2;
+    $base   = Math::BigInt->new("$base");
+    $n      = Math::BigInt->new("$n");
+
+    return 0;
+}
 =head1 AUTHOR
 
 Jonathan Leto, C<< <jonathan at leto.net> >>

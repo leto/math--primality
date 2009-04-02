@@ -1,0 +1,19 @@
+=head1 ROADMAP
+
+=head2 To be Done
+
+* Port iMillerRabin from spec/bpsw/trn.c
+
+** this will be is_strong_pseudoprime()
+
+* Port iStrongLucasSelfridge(mpz_t) from spec/bpsw/trn.c
+
+** this will be is_strong_lucas_pseudoprime()
+
+=head2 Already Done
+
+* implement base b pseudoprime test, a.k.a n is in psp(b)
+  this is is_pseudoprime()
+
+=cut
+
