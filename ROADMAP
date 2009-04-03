@@ -2,27 +2,40 @@
 
 =head2 To be Done
 
-* Port iMillerRabin from spec/bpsw/trn.c
+* Port iMillerRabin from spec/bpsw/trn.c , this will be is_strong_pseudoprime()
 
-** this will be is_strong_pseudoprime()
-
-* Port iStrongLucasSelfridge(mpz_t) from spec/bpsw/trn.c
-
-** this will be is_strong_lucas_pseudoprime()
+* Port iStrongLucasSelfridge(mpz_t) from spec/bpsw/trn.c , this will be is_strong_lucas_pseudoprime()
 
 * Port iBPSW from spec/bpsw/bpsw1.c
 
-** it is basically trial division, followed by a is_strong_pseudoprime(),
-    followed by a is_strong_lucas_pseudoprime()
+ This is basically trial division, followed by a is_strong_pseudoprime(),
+ followed by a is_strong_lucas_pseudoprime()
 
-** there are many optimizations to made for small arguments
-
-** this will be is_prime(), to replace Math::PARI::is_prime()
-
-** it may take optional arguments for power-users, but we want to have a really simple function for people to call
+ There are many optimizations to made for small arguments this will be
+ is_prime(), to replace Math::PARI::is_prime() 
+    
+ It may take optional arguments for power-users, but we want to have a really
+ simple function for people to call like this:
 
     is_prime($x) ? foo() : bar();
 
+ which "does what I mean."
+
+** next_prime()
+
+=head2 Hairy Details
+
+* I am currently adding functionality to Math::BigInt::GMP so that we can access
+the following functions in GMP which up till now, have not been available from
+Perl
+
+* mpz_scan1 - needed for is_strong_pseudoprime()
+
+* mpz_jacobi - needed for is_strong_lucas_pseudoprime()
+
+* others?
+
+=head2 Other Possibilities
 
 =head2 Already Done
 
