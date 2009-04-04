@@ -33,7 +33,7 @@ Perl
 
 * mpz_jacobi - needed for is_strong_lucas_pseudoprime()
 
-* others?
+* mpz_lucnum_ui and mpz_lucnum2_ui - lucas number sequences
 
 =head2 Other Possibilities
 
