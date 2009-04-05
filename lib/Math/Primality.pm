@@ -50,6 +50,7 @@ sub is_pseudoprime
 {
     my ($n, $base) = @_;
     # force to BigInts for now
+    return 0 unless $n;
     $base ||= 2;
     $base   = Math::BigInt->new("$base");
     $n      = Math::BigInt->new("$n");
@@ -59,8 +60,8 @@ sub is_pseudoprime
 
     my $m   = $n->copy->bdec;            # m = n - 1
     my $mod = $base->copy;
-    $mod->bmodpow($m,$n);     # (base**exp) (mod n)
-    return $mod == 1;
+    $mod->bmodpow($m,$n);         # (base**exp) (mod n)
+    return ! $mod->bcmp(1);       # pseudoprime if $mod = 1
 }
 
 =head2 is_strong_pseudoprime($n,$b)
