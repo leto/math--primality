@@ -1,6 +1,7 @@
 package Math::Primality;
 
 use Math::BigInt qw/bgcd/;
+use Math::BigInt::GMP;
 use base 'Exporter';
 use warnings;
 use strict;
@@ -17,7 +18,7 @@ Version 0.01
 
 our $VERSION = '0.01';
 
-our @EXPORT_OK = qw/is_pseudoprime/;
+our @EXPORT_OK = qw/is_pseudoprime is_strong_pseudoprime is_prime/;
 
 our %EXPORT_TAGS = ( all => \@EXPORT_OK );
 
@@ -73,13 +74,20 @@ Returns true if $n is a base $b strong pseudoprime, false otherwise.
 sub is_strong_pseudoprime
 {
     my ($n, $base) = @_;
+
     # force to BigInts for now
     $base ||= 2;
     $base   = Math::BigInt->new("$base");
     $n      = Math::BigInt->new("$n");
-    my $m   = $n->copy->bdec();
 
-    # need access to mpz_scan1
+    my $cmp = $n->bcmp(2);
+    return 1 if $cmp == 0;
+    return 0 if $cmp < 0;
+
+    my $m   = $n->copy->bdec();
+    my $s   = $m->_scan1(0);
+    my $d   = $n->new(0);
+    Math::BigInt::GMP->tdiv_q_2exp($d, $m,$s);
 
     return 0;
 }
