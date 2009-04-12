@@ -1,10 +1,13 @@
 package Math::Primality;
 
+use Math::BigInt;
 use Math::BigInt qw/bgcd/;
 use Math::BigInt::GMP;
 use base 'Exporter';
 use warnings;
 use strict;
+
+use constant GMP => 'Math::BigInt::GMP';
 
 =head1 NAME
 
@@ -77,17 +80,30 @@ sub is_strong_pseudoprime
 
     # force to BigInts for now
     $base ||= 2;
-    $base   = Math::BigInt->new("$base");
-    $n      = Math::BigInt->new("$n");
+    $base   = GMP->_new("$base");
+    $n      = GMP->_new("$n");
 
-    my $cmp = $n->bcmp(2);
+    my $cmp = GMP->_cmp_ui($n, 2 );
     return 1 if $cmp == 0;
     return 0 if $cmp < 0;
 
-    my $m   = $n->copy->bdec();
-    my $s   = $m->_scan1(0);
-    my $d   = $n->new(0);
-    Math::BigInt::GMP->tdiv_q_2exp($d, $m,$s);
+    my $m   = GMP->_copy($n);
+
+    GMP->_dec($m);
+
+    my $s   = GMP->scan1($m,0);
+    my $d   = $n->_new(0);
+    my $pow   = $n->_new(0);
+
+    GMP->tdiv_q_2exp($d, $m,$s);
+    GMP->_modpow($pow,$d, $base);
+    if ( GMP->_cmp_ui($pow,1) == 0 ) {
+        return 1;
+    }
+
+    if ( GMP->_acmp($pow,$m) == 0 ) {
+        return 1;
+    }
 
     return 0;
 }
