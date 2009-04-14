@@ -1,11 +1,11 @@
 package Math::Primality;
-
+use warnings;
+use strict;
+use Data::Dumper;
 use Math::BigInt;
 use Math::BigInt qw/bgcd/;
 use Math::BigInt::GMP;
 use base 'Exporter';
-use warnings;
-use strict;
 
 use constant GMP => 'Math::BigInt::GMP';
 
@@ -88,22 +88,54 @@ sub is_strong_pseudoprime
     return 0 if $cmp < 0;
 
     my $m   = GMP->_copy($n);
+    $m        = GMP->_dec($m);
+    warn "m=$m";
+    my $s     = GMP->scan1($m,0);
 
-    GMP->_dec($m);
+    warn  "s=$s" ;
+    my $d     = $n->_new(0);
 
-    my $s   = GMP->scan1($m,0);
-    my $d   = $n->_new(0);
-    my $pow   = $n->_new(0);
+    $d = GMP->tdiv_q_2exp($d, $m,$s);
+    warn "d=$d";
 
-    GMP->tdiv_q_2exp($d, $m,$s);
-    GMP->_modpow($pow,$d, $base);
-    if ( GMP->_cmp_ui($pow,1) == 0 ) {
+    my $residue = GMP->_modpow($base,$d, $n);
+    warn "residue=$residue" ;
+    warn "m=$m";
+    warn "d=$d";
+    warn "base=$base";
+
+    # if $base^$d = +-1 (mod $n) , $n is a strong pseudoprime
+
+    my $res = GMP->_copy($residue);
+
+    if ( GMP->_cmp_ui($res,1) == 0 ) {
+        warn "found spsp";
         return 1;
     }
-
-    if ( GMP->_acmp($pow,$m) == 0 ) {
+    if ( GMP->_acmp($res,$m) == 0 ) {
+        warn "found spsp";
         return 1;
     }
+    warn "m=$m";
+    map {
+        # successively square $residue, $n is a strong psuedoprime
+        # if any of these are congruent to -1 (mod $n)
+        my $mul = GMP->_mul($res,$res);
+        warn "res=$res";
+        warn "mul=$mul";
+        my $mod = GMP->_copy($res);
+        my $ret = GMP->_mod($mod,$base);
+        warn "mod=$mod";
+        warn "$res % $base = $ret ";
+
+        warn  "res=$res";
+
+        if ( GMP->_acmp($res, $m) == 0) {
+            warn "$res == $m => spsp!";
+            return 1;
+        }
+        warn "$res != $m";
+    } ( 1 .. $s-1 );
 
     return 0;
 }
