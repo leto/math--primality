@@ -100,24 +100,27 @@ sub is_strong_pseudoprime
 
     # if $base^$d = +-1 (mod $n) , $n is a strong pseudoprime
 
-    #warn "$residue ?= 1";
+    warn "$residue ?= 1";
     if ( GMP->_cmp_ui($residue,1) == 0 ) {
     #    warn "found spsp";
         return 1;
     }
-    #warn "$residue ?= $m";
+    warn "$residue ?= $m";
     if ( GMP->_acmp($residue,$m) == 0 ) {
     #    warn "found spsp";
         return 1;
     }
+    my $res = GMP->_copy($residue);
+
     map {
-        my $res = GMP->_copy($residue);
+        warn "res=$res";
         # successively square $residue, $n is a strong psuedoprime
         # if any of these are congruent to -1 (mod $n)
-        my $mul = GMP->_mul($res,$res);
-        #warn "res=$res mul=$mul";
+        GMP->_mul($res,$residue);
+        warn "$res^2=$res";
+
         my $mod = GMP->_copy($res);
-        GMP->_mod($mod,$n);
+        $mod = GMP->_mod($mod,$n);
         warn "$res % $n = $mod ";
         warn  "$mod ?= $m";
         if ( GMP->_acmp($mod, $m) == 0) {
