@@ -93,19 +93,19 @@ sub is_strong_pseudoprime
     my $d   = $n->_new(0);
 
     $d = GMP->tdiv_q_2exp($d, $m,$s);
-    warn "m=$m, s=$s, d=$d";
+    #warn "m=$m, s=$s, d=$d";
 
     my $residue = GMP->_modpow($base,$d, $n);
     #warn "$base^$d % $n = $residue";
 
     # if $base^$d = +-1 (mod $n) , $n is a strong pseudoprime
 
-    warn "$residue ?= 1";
+    #warn "$residue ?= 1";
     if ( GMP->_cmp_ui($residue,1) == 0 ) {
     #    warn "found spsp";
         return 1;
     }
-    warn "$residue ?= $m";
+    #warn "$residue ?= $m";
     if ( GMP->_acmp($residue,$m) == 0 ) {
     #    warn "found spsp";
         return 1;
@@ -113,14 +113,14 @@ sub is_strong_pseudoprime
     my $res = GMP->_copy($residue);
 
     map {
-        warn "res=$res";
+        #warn "res=$res";
         # successively square $residue, $n is a strong psuedoprime
         # if any of these are congruent to -1 (mod $n)
         GMP->_mul($res,$residue);
-        warn "$res^2=$res";
+        #warn "$res^2=$res";
 
         my $mod = GMP->_copy($res);
-        $mod = GMP->_mod($mod,$n);
+        GMP->_mod($mod,$n);
         warn "$res % $n = $mod ";
         warn  "$mod ?= $m";
         if ( GMP->_acmp($mod, $m) == 0) {
