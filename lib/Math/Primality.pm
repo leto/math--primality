@@ -88,26 +88,20 @@ sub is_strong_pseudoprime
     return 0 if $cmp < 0;
 
     my $m   = GMP->_copy($n);
-    $m        = GMP->_dec($m);
-    warn "m=$m";
-    my $s     = GMP->scan1($m,0);
-
-    warn  "s=$s" ;
-    my $d     = $n->_new(0);
+    $m      = GMP->_dec($m);
+    my $s   = GMP->scan1($m,0);
+    my $d   = $n->_new(0);
 
     $d = GMP->tdiv_q_2exp($d, $m,$s);
     warn "d=$d";
 
     my $residue = GMP->_modpow($base,$d, $n);
-    warn "residue=$residue" ;
-    warn "m=$m";
-    warn "d=$d";
-    warn "base=$base";
+    warn "residue=$residue m=$m d=$d base=$base";
 
     # if $base^$d = +-1 (mod $n) , $n is a strong pseudoprime
 
-    my $res = GMP->_copy($residue);
 
+    my $res = GMP->_copy($residue);
     if ( GMP->_cmp_ui($res,1) == 0 ) {
         warn "found spsp";
         return 1;
@@ -118,18 +112,15 @@ sub is_strong_pseudoprime
     }
     warn "m=$m";
     map {
+        $res = GMP->_copy($residue);
         # successively square $residue, $n is a strong psuedoprime
         # if any of these are congruent to -1 (mod $n)
         my $mul = GMP->_mul($res,$res);
-        warn "res=$res";
-        warn "mul=$mul";
+        warn "res=$res mul=$mul";
         my $mod = GMP->_copy($res);
-        my $ret = GMP->_mod($mod,$base);
-        warn "mod=$mod";
-        warn "$res % $base = $ret ";
-
+        GMP->_mod($mod,$base);
+        warn "$res % $base = $mod ";
         warn  "res=$res";
-
         if ( GMP->_acmp($res, $m) == 0) {
             warn "$res == $m => spsp!";
             return 1;
