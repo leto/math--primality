@@ -8,3 +8,13 @@ pm_to_blib*
 .lwpcookies
 Math::Primality-*
 cover_db
+.gitignore
+*core
+*.bak
+\.*sw[op]
+tmp*
+pod2htm*
+foo*
+tags
+.DS_Store
+.prove
