@@ -6,6 +6,7 @@ use Math::BigInt;
 use Math::BigInt qw/bgcd/;
 use Math::BigInt::GMP;
 use base 'Exporter';
+our $DEBUG = 0;
 
 use constant GMP => 'Math::BigInt::GMP';
 
@@ -50,6 +51,10 @@ The default base of 2 is used if no base is given. Base 2 pseudoprimes are often
 
 =cut
 
+sub debug {
+    warn $_[0] if $ENV{DEBUG} or $DEBUG;
+}
+
 sub is_pseudoprime
 {
     my ($n, $base) = @_;
@@ -93,45 +98,42 @@ sub is_strong_pseudoprime
     my $d   = $n->_new(0);
 
     $d = GMP->tdiv_q_2exp($d, $m,$s);
-    #warn "m=$m, s=$s, d=$d";
+    debug "m=$m, s=$s, d=$d";
 
     my $residue = GMP->_modpow($base,$d, $n);
-    #warn "$base^$d % $n = $residue";
+    debug "$base^$d % $n = $residue";
 
     # if $base^$d = +-1 (mod $n) , $n is a strong pseudoprime
 
-    #warn "$residue ?= 1";
     if ( GMP->_cmp_ui($residue,1) == 0 ) {
-    #    warn "found spsp";
+        debug "found $n as spsp since $base^$d % $n == $residue == 1\n";
         return 1;
     }
-    #warn "$residue ?= $m";
     if ( GMP->_acmp($residue,$m) == 0 ) {
-    #    warn "found spsp";
+        debug "found $n as spsp since $base^$d % $n == $residue == $m\n";
         return 1;
     }
-    my $res = GMP->_copy($residue);
 
     map {
-        #warn "res=$res";
         # successively square $residue, $n is a strong psuedoprime
         # if any of these are congruent to -1 (mod $n)
-        GMP->_mul($res,$residue);
-        #warn "$res^2=$res";
+        GMP->_mul($residue,$residue);
+        debug "$_: r=$residue";
 
-        my $mod = GMP->_copy($res);
+        my $mod = GMP->_copy($residue);
         GMP->_mod($mod,$n);
-        warn "$res % $n = $mod ";
-        warn  "$mod ?= $m";
+        debug "$_:$residue % $n = $mod ";
+
         if ( GMP->_acmp($mod, $m) == 0) {
-            warn "$mod == $m => spsp!";
+            debug "$_:$mod == $m => spsp!";
             return 1;
         }
-        #warn "$mod != $m";
     } ( 1 .. $s-1 );
 
     return 0;
 }
+
+
 =head1 AUTHOR
 
 Jonathan Leto, C<< <jonathan at leto.net> >>
