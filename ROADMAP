@@ -2,18 +2,19 @@
 
 =head2 To be Done
 
-* Port iMillerRabin from spec/bpsw/trn.c , this will be is_strong_pseudoprime()
-
 * Port iStrongLucasSelfridge(mpz_t) from spec/bpsw/trn.c , this will be is_strong_lucas_pseudoprime()
 
 * Port iBPSW from spec/bpsw/bpsw1.c
 
+        is_prime($N) <==> iBPSW(N,1)
+
  This is basically trial division, followed by a is_strong_pseudoprime(),
  followed by a is_strong_lucas_pseudoprime()
 
- There are many optimizations to made for small arguments this will be
- is_prime(), to replace Math::PARI::is_prime() 
-    
+ There are many optimizations to made for small arguments
+
+ Main function: is_prime(), to replace Math::PARI::is_prime()
+
  It may take optional arguments for power-users, but we want to have a really
  simple function for people to call like this:
 
@@ -23,21 +24,36 @@
 
 ** next_prime()
 
+ This function is merely a wrapper around is_prime(), which takes a starting
+number and increments it until is_prime() returns true and then returns that
+number.
+
+This should only require a small number of tests, most of the work is in making
+the necessary components of is_prime().
+
 =head2 Hairy Details
 
 * I am currently adding functionality to Math::BigInt::GMP so that we can access
 the following functions in GMP which up till now, have not been available from
-Perl
+Perl. This has been completed, but the author of Math::BigInt::GMP needs to be contacted to get changes applied.
 
 * mpz_scan1 - needed for is_strong_pseudoprime()
 
 * mpz_jacobi - needed for is_strong_lucas_pseudoprime()
 
+* mpz_tdiv_q_2exp - needed for is_strong_pseudoprime()
+
+These have been added but will not be used, there is a more efficient algorithm
+to calculate series of lucas numbers in bpsw.c
+
 * mpz_lucnum_ui and mpz_lucnum2_ui - lucas number sequences
+
 
 =head2 Other Possibilities
 
 =head2 Already Done
+
+* Port iMillerRabin from spec/bpsw/trn.c , this will be is_strong_pseudoprime()
 
 * implement base b pseudoprime test, a.k.a n is in psp(b)
   this is is_pseudoprime()
