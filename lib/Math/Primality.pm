@@ -32,7 +32,7 @@ our %EXPORT_TAGS = ( all => \@EXPORT_OK );
     use Math::BigInt;
 
     my $t1 = is_pseudoprime($x,$base);
-    my $t2 = is_lucas_pseudoprime($x);
+    my $t2 = is_strong_pseudoprime($x);
 
 =head1 EXPORT
 
@@ -40,7 +40,10 @@ our %EXPORT_TAGS = ( all => \@EXPORT_OK );
 
 =head2 is_pseudoprime($n,$b)
 
-Returns true if $n is a base $b pseudoprime, otherwise false.
+Returns true if $n is a base $b pseudoprime, otherwise false.  The variable $n
+should be a Math::BigInt::GMP object or a string if it is larger than long
+integer, which varies from system to system.
+
 The default base of 2 is used if no base is given. Base 2 pseudoprimes are often called Fermat pseudoprimes.
 
     if ( is_pseudoprime($n,$b) ) {
@@ -75,7 +78,8 @@ sub is_pseudoprime
 
 =head2 is_strong_pseudoprime($n,$b)
 
-Returns true if $n is a base $b strong pseudoprime, false otherwise.
+Returns true if $n is a base $b strong pseudoprime, false otherwise.  The variable $n should be a Math::BigInt::GMP object or
+a string if it is larger than long integer. Strong psuedoprimes are often called Miller-Rabin pseudoprimes.
 
 =cut
 
@@ -91,6 +95,9 @@ sub is_strong_pseudoprime
     my $cmp = GMP->_cmp_ui($n, 2 );
     return 1 if $cmp == 0;
     return 0 if $cmp < 0;
+
+    # unnecessary but faster if $n is even
+    return 0 if GMP->_is_even($n);
 
     my $m   = GMP->_copy($n);
     $m      = GMP->_dec($m);
