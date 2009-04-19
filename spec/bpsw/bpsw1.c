@@ -1,3 +1,7 @@
+// Modified version by Jonathan Leto <jonathan@leto.net>
+//
+// gcc -I/opt/local/include -L/opt/local/lib -lgmp bpsw1.c trn.c -o bpsw
+//
 /* bpsw1.c               Thomas R. Nicely          2007.02.09.2350
  *                    http://www.trnicely.net
  * GCC 3.04                 DJGPP 2.03                    GMP 4.01

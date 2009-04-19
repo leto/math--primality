@@ -45,7 +45,8 @@
   #include <conio.h>
 #else
   #include <sys/ioctl.h>
-  #include <sys/sysinfo.h>
+//  #include <sys/sysinfo.h>
+  #include <sys/sysctl.h>
 #endif
 
 /* M_EPSILON1 is the convergence tolerance in several calculations. */
@@ -2783,6 +2784,8 @@ int __iLockMemory(void *MemStartAddress, unsigned long ulBytes)
 #endif
 }
 /***********************************************************************/
+// These things don't play nicely with OSX and are not needed by bpsw
+/*
 unsigned long __ulPhysicalMemoryAvailable(void)
 {
 #ifdef __DJGPP__
@@ -2791,6 +2794,7 @@ unsigned long __ulPhysicalMemoryAvailable(void)
   return(((unsigned long)get_avphys_pages())*((unsigned long)getpagesize()));
 #endif
 }
+*/
 /***********************************************************************/
 int iSignum(long double ldArg)
 {
