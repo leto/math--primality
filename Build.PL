@@ -9,7 +9,7 @@ my $builder = Module::Build->new(
     dist_version_from   => 'lib/Math/Primality.pm',
     build_requires => {
         'Test::More' => 0,
-        'Math::BigInt::GMP' => 1.25,
+        'Math::GMPz' => 0.26,
     },
     add_to_cleanup      => [ 'Math::Primality-*' ],
     create_makefile_pl => 'traditional',
