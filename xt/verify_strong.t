@@ -8,10 +8,11 @@ use Test::More tests => 419489;
 use Math::Primality qw/ is_strong_pseudoprime /;
 
 my $bail = <<BAIL;
-You must download and unzip the file strong_pseudoprimes_less_than_1e15.txt
-from http://leto.net/data/primality and put it in the xt/ directory to run
-these tests. The file contains roughly half a million numbers and is 6
-megabytes (2.7 gzipped)
+
+You must download and unzip the file spsp_base2_1e15.txt.gz from
+http://leto.net/data/primality and put it in the xt/ directory to run these
+tests. The file contains just under 420,000 integers and is 2.7MB, 6MB
+uncompressed.
 
 Example commands to get this data:
 
