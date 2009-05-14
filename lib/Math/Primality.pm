@@ -26,8 +26,7 @@ our %EXPORT_TAGS = ( all => \@EXPORT_OK );
 
 =head1 SYNOPSIS
 
-    use Math::Primality;
-    use Math::BigInt;
+    use Math::Primality qw/is_pseudoprime is_strong_pseudoprime/;
 
     my $t1 = is_pseudoprime($x,$base);
     my $t2 = is_strong_pseudoprime($x);
@@ -39,15 +38,14 @@ our %EXPORT_TAGS = ( all => \@EXPORT_OK );
 =head2 is_pseudoprime($n,$b)
 
 Returns true if $n is a base $b pseudoprime, otherwise false.  The variable $n
-should be a Math::BigInt::GMP object or a string if it is larger than long
-integer, which varies from system to system.
+should be a Perl integer or Math::GMPz object.
 
 The default base of 2 is used if no base is given. Base 2 pseudoprimes are often called Fermat pseudoprimes.
 
     if ( is_pseudoprime($n,$b) ) {
-        ...
+        # it's a pseudoprime
     } else {
-        ...
+        # not a psuedoprime
     }
 
 =cut
@@ -61,6 +59,7 @@ sub is_pseudoprime
     my ($n, $base) = @_;
     return 0 unless $n;
     $base ||= 2;
+    # we should check if we are passed a GMPz object
     $base   = GMP->new("$base");
     $n      = GMP->new("$n");
 
@@ -93,6 +92,7 @@ sub is_strong_pseudoprime
     my ($n, $base) = @_;
 
     $base ||= 2;
+    # we should check if we are passed a GMPz object
     $base   = GMP->new("$base");
     $n      = GMP->new("$n");
 
@@ -118,15 +118,12 @@ sub is_strong_pseudoprime
 
     # if $base^$d = +-1 (mod $n) , $n is a strong pseudoprime
 
-    $cmp = Rmpz_cmp_ui( $residue,1);
-
-    if ( $cmp == 0 ) {
+    if ( Rmpz_cmp_ui( $residue,1) == 0 ) {
         debug "found $n as spsp since $base^$d % $n == $residue == 1\n";
         return 1;
     }
-    $cmp = Rmpz_cmp($residue,$m);
 
-    if ( $cmp == 0 ) {
+    if ( Rmpz_cmp($residue,$m) == 0 ) {
         debug "found $n as spsp since $base^$d % $n == $residue == $m\n";
         return 1;
     }
@@ -207,4 +204,4 @@ under the same terms as Perl itself.
 
 =cut
 
-1; # End of Math::Primality
+exp(0); # End of Math::Primality
