@@ -33,21 +33,7 @@ the necessary components of is_prime().
 
 =head2 Hairy Details
 
-* I am currently adding functionality to Math::BigInt::GMP so that we can access
-the following functions in GMP which up till now, have not been available from
-Perl. This has been completed, but the author of Math::BigInt::GMP needs to be contacted to get changes applied.
-
-* mpz_scan1 - needed for is_strong_pseudoprime()
-
-* mpz_jacobi - needed for is_strong_lucas_pseudoprime()
-
-* mpz_tdiv_q_2exp - needed for is_strong_pseudoprime()
-
-These have been added but will not be used, there is a more efficient algorithm
-to calculate series of lucas numbers in bpsw.c
-
-* mpz_lucnum_ui and mpz_lucnum2_ui - lucas number sequences
-
+* Math::GMPz implements all the hairy details of GMP
 
 =head2 Other Possibilities
 
