@@ -12,7 +12,7 @@ my $builder = Module::Build->new(
         'Math::GMPz' => 0.26,
     },
     add_to_cleanup      => [ 'Math::Primality-*' ],
-    create_makefile_pl => 'traditional',
+    create_makefile_pl  => 'traditional',
 );
 
 $builder->create_build_script();

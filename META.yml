@@ -1,0 +1,20 @@
+---
+name: Math-Primality
+version: 0.01
+author:
+  - 'Jonathan Leto <jonathan@leto.net>'
+abstract: Various Primality Algorithms
+license: perl
+resources:
+  license: ~
+build_requires:
+  Math::GMPz: 0.26
+  Test::More: 0
+provides:
+  Math::Primality:
+    file: lib/Math/Primality.pm
+    version: 0.01
+generated_by: Module::Build version 0.32
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.2.html
+  version: 1.2
