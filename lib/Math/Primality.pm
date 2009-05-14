@@ -10,7 +10,7 @@ use constant GMP => 'Math::GMPz';
 
 =head1 NAME
 
-Math::Primality - Various Primality Algorithms
+Math::Primality - Advanced Primality Algorithms
 
 =head1 VERSION
 
@@ -26,7 +26,7 @@ our %EXPORT_TAGS = ( all => \@EXPORT_OK );
 
 =head1 SYNOPSIS
 
-    use Math::Primality qw/is_pseudoprime is_strong_pseudoprime/;
+    use Math::Primality qw/:all/;
 
     my $t1 = is_pseudoprime($x,$base);
     my $t2 = is_strong_pseudoprime($x);
