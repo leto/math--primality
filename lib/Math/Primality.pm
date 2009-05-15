@@ -85,6 +85,14 @@ sub _copy
 Returns true if $n is a base $b strong pseudoprime, false otherwise.  The variable $n should be a Perl integer
 or a Math::GMPz object. Strong psuedoprimes are often called Miller-Rabin pseudoprimes.
 
+The default base of 2 is used if no base is given.
+
+    if ( is_strong_pseudoprime($n,$b) ) {
+        # it's a strong pseudoprime
+    } else {
+        # not a strong psuedoprime
+    }
+
 =cut
 
 sub is_strong_pseudoprime
@@ -166,7 +174,7 @@ make changes.
 The algorithms in this module have been ported from the C source code in
 bpsw1.zip by Thomas R. Nicely, available at http://www.trnicely.net/misc/bpsw.html
 or in the spec/bpsw directory of the Math::Primality source code. Without his
-research this module would not be exist.
+research this module would not exist.
 
 
 =head1 SUPPORT
