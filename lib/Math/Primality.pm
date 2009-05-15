@@ -188,6 +188,10 @@ You can also look for information at:
 
 =over 4
 
+=item * Math::Primality on Github
+
+L<http://github.com/leto/math--primality/tree/master>
+
 =item * RT: CPAN's request tracker
 
 L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=Math::Primality>
