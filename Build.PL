@@ -13,7 +13,7 @@ my $builder = Module::Build->new(
         'Test::More' => 0,
         'Math::GMPz' => 0.26,
     },
-    add_to_cleanup      => [ 'Math::Primality-*' ],
+    add_to_cleanup      => [ 'Math-Primality-*' ],
     create_makefile_pl  => 'traditional',
 );
 
