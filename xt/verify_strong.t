@@ -4,8 +4,10 @@ use strict;
 use warnings;
 use lib 'lib';
 use File::Spec::Functions;
-use Test::More tests => 419489;
+#use Test::More tests => 419489;
+print "1..419489\n";
 use Math::Primality qw/ is_strong_pseudoprime /;
+$|++;
 
 my $bail = <<BAIL;
 
@@ -32,9 +34,11 @@ sub bail
     exit(1);
 }
 
+my $t = 1;
 while(<$fh>) {
     chomp;
-    ok( is_strong_pseudoprime( $_ ), "$_ is a strong pseudoprime");
+    print is_strong_pseudoprime( $_ ) ? "ok $t - $_ is a spsp(2)\n" : "not ok $t - $_ is a spsp(2)\n";
+    $t++;
 }
 
 close $fh;
