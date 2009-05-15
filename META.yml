@@ -3,7 +3,7 @@ name: Math-Primality
 version: 0.02
 author:
   - 'Jonathan Leto <jonathan@leto.net>'
-abstract: Advanced Primality Algorithms
+abstract: Advanced Primality Algorithms using GMP
 license: perl
 resources:
   license: ~

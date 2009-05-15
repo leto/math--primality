@@ -10,7 +10,7 @@ use constant GMP => 'Math::GMPz';
 
 =head1 NAME
 
-Math::Primality - Advanced Primality Algorithms
+Math::Primality - Advanced Primality Algorithms using GMP
 
 =head1 VERSION
 

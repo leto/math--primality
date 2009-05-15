@@ -2,7 +2,7 @@
 
     Following in the steps of other open source projects that
     eventually take over the world, here is the partial list
-    of people who have contributed to Math::GSL and its supporting
+    of people who have contributed to Math::Primality and its supporting
     works.  It is sorted by name and formatted to allow easy
     grepping and beautification by scripts.
     The fields are: name (N), email (E), web-address (W),
@@ -10,7 +10,7 @@
 
         Thanks,
 
-        The Math::GSL Team
+        The Math::Primality Team
         PS: Yes, this looks remarkably like the many other CREDITS formats
         PPS: This file is encoded in UTF-8
 
