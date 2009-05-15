@@ -14,11 +14,11 @@ Math::Primality - Advanced Primality Algorithms
 
 =head1 VERSION
 
-Version 0.01
+Version 0.02
 
 =cut
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 our @EXPORT_OK = qw/is_pseudoprime is_strong_pseudoprime is_prime/;
 
@@ -82,8 +82,8 @@ sub _copy
 
 =head2 is_strong_pseudoprime($n,$b)
 
-Returns true if $n is a base $b strong pseudoprime, false otherwise.  The variable $n should be a Math::BigInt::GMP object or
-a string if it is larger than long integer. Strong psuedoprimes are often called Miller-Rabin pseudoprimes.
+Returns true if $n is a base $b strong pseudoprime, false otherwise.  The variable $n should be a Perl integer
+or a Math::GMPz object. Strong psuedoprimes are often called Miller-Rabin pseudoprimes.
 
 =cut
 
