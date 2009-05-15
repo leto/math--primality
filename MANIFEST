@@ -1,9 +1,22 @@
+bin/enumerate_strong_pseudoprime.pl
 Build.PL
 Changes
-MANIFEST
-README
+CREDITS
+examples/is_strong
 lib/Math/Primality.pm
-t/00-load.t
-t/pod.t
 Makefile.PL
+MANIFEST			This list of files
+MANIFEST.SKIP
 META.yml
+README
+ROADMAP
+spec/bpsw/bpsw
+spec/bpsw/bpsw1.c
+spec/bpsw/trn.c
+spec/bpsw/trn.h
+t/00-load.t
+t/boilerplate.t
+t/is_pseudoprime.t
+t/is_strong_pseudoprime.t
+t/pod.t
+xt/verify_strong.t

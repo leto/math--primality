@@ -11,3 +11,5 @@ blib/*
 foo*
 .*\.gz
 ^tags
+Math-Primality-\d+\..*
+xt/spsp*
