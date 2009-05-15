@@ -154,11 +154,19 @@ Jonathan Leto, C<< <jonathan at leto.net> >>
 
 =head1 BUGS
 
-Please report any bugs or feature requests to C<bug-math-primality at rt.cpan.org>, or through
-the web interface at L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Math::Primality>.  I will be notified, and then you'll
-automatically be notified of progress on your bug as I make changes.
+Please report any bugs or feature requests to C<bug-math-primality at
+rt.cpan.org>, or through the web interface at
+L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Math::Primality>.  I will be
+notified, and then you'll automatically be notified of progress on your bug as I
+make changes.
 
 
+=head1 THANKS
+
+The algorithms in this module have been ported from the C source code in
+bpsw1.zip by Thomas R. Nicely, available at http://www.trnicely.net/misc/bpsw.html
+or in the spec/bpsw directory of the Math::Primality source code. Without his
+research this module would not be exist.
 
 
 =head1 SUPPORT
