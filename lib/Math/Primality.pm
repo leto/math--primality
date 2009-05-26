@@ -156,6 +156,11 @@ sub is_strong_pseudoprime
     return 0;
 }
 
+sub is_strong_lucas_pseudoprime
+{
+
+}
+
 =head1 AUTHOR
 
 Jonathan Leto, C<< <jonathan at leto.net> >>
