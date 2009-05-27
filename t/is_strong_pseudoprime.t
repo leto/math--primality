@@ -1,8 +1,12 @@
 #!perl -T
 
-use Test::More tests => 508;
+use Test::More tests => 509;
 
 use Math::Primality qw/ is_strong_pseudoprime /;
+use Math::GMPz;
+
+my $z = Math::GMPz->new(3);
+ok(is_strong_pseudoprime($z), 'is_strong_pseudoprime groks Math::GMPz objects');
 
 ok(!is_strong_pseudoprime(-1),'-1 is not a spsp' );
 ok(!is_strong_pseudoprime(0),'0 is not a spsp' );
