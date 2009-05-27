@@ -17,6 +17,7 @@ spec/bpsw/trn.h
 t/00-load.t
 t/boilerplate.t
 t/is_pseudoprime.t
+t/is_strong_lucas_pseudoprime.t
 t/is_strong_pseudoprime.t
 t/pod.t
 xt/verify_strong.t
