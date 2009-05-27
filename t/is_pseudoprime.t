@@ -1,5 +1,7 @@
-#!perl -T
+#!/usr/bin/env perl -w
 
+use strict;
+use warnings;
 use Test::More tests => 72;
 
 use Math::Primality qw/ is_pseudoprime /;
