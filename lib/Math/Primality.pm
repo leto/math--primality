@@ -60,8 +60,8 @@ sub is_pseudoprime
     return 0 unless $n;
     $base ||= 2;
     # we should check if we are passed a GMPz object
-    $base   = GMP->new("$base");
-    $n      = GMP->new("$n");
+    $base   = GMP->new($base);
+    $n      = GMP->new($n);
 
     # if $n and $base are not coprime, than $base is a factor of $n
     # $base > 2 && ( Math::BigInt::bgcd($n,$base) != 1 ) && return 0;
@@ -77,7 +77,7 @@ sub is_pseudoprime
 sub _copy
 {
     my ($n) = @_;
-    return GMP->new("$n");
+    return GMP->new($n);
 }
 
 =head2 is_strong_pseudoprime($n,$b)
@@ -101,8 +101,8 @@ sub is_strong_pseudoprime
 
     $base ||= 2;
     # we should check if we are passed a GMPz object
-    $base   = GMP->new("$base");
-    $n      = GMP->new("$n");
+    $base   = GMP->new($base);
+    $n      = GMP->new($n);
 
     my $cmp = Rmpz_cmp_ui($n, 2 );
     return 1 if $cmp == 0;
