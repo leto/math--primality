@@ -1,9 +1,13 @@
 #!perl -T
 
-use Test::More tests => 71;
+use Test::More tests => 72;
 
 use Math::Primality qw/ is_pseudoprime /;
+use Math::GMPz;
 
+my $z = Math::GMPz->new(7);
+
+ok( is_pseudoprime($z,2) , 'is_pseudoprime should handle Math::GMPz objects, 7 is a psp(2)');
 
 ok( is_pseudoprime(7,2) , '7 is a psp(2)');
 ok( is_pseudoprime(7) , 'is_pseudoprime defaults to base 2');
