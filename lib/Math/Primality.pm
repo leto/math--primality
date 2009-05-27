@@ -20,7 +20,7 @@ Version 0.02
 
 our $VERSION = '0.02';
 
-our @EXPORT_OK = qw/is_pseudoprime is_strong_pseudoprime is_prime/;
+our @EXPORT_OK = qw/is_pseudoprime is_strong_pseudoprime is_prime is_strong_lucas_pseudoprime/;
 
 our %EXPORT_TAGS = ( all => \@EXPORT_OK );
 
