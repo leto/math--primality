@@ -1,7 +1,8 @@
-#!perl -T
+#!/usr/bin/env perl -w
 
+use strict;
+use warnings;
 use Test::More tests => 509;
-
 use Math::Primality qw/ is_strong_pseudoprime /;
 use Math::GMPz;
 
