@@ -160,10 +160,38 @@ sub is_strong_lucas_pseudoprime($)
 {
     my ($n) = @_;
     $n      = GMP->new($n);
+    # weed out all perfect squares
     if ( Rmpz_perfect_square_p($n) ) {
         return 0;
     }
+    # we also need to weed out all N < 3 and all even N 
+    my $cmp = Rmpz_cmp_ui($n, 2 );
+    return 1 if $cmp == 0;
+    return 0 if $cmp < 0;
+    return 0 if Rmpz_even_p($n);
     # determine Selfridge parameters D, P and Q
+    # determine D
+    my $d = 5;
+    my $sign = 1;
+    while (1) {
+      my $wd = $d * $sign;
+      my $gcd = Rmpz_gcd_ui(undef, $n, $wd);
+      if ($gcd > 1 && Rmpz_cmp_ui($n, $gcd) > 0) {
+        debug "1 < $gcd < $n => $n is composite with factor $wd";
+        return 0;
+      }
+      my $j = Rmpz_jacobi(GMP->new($wd), $n);
+      if ($j == -1) {
+        debug "Rmpz_jacobi($wd, $n) == -1 => found D";
+        last; 
+      }
+      # didn't find D, increment and swap sign
+      $d += 2;
+      $sign = -$sign;
+      ### TODO ###
+      # need code to make sure we don't overflow $d 
+      ### TODO ###
+    }
     # translate code which computes lucas numbers in iStrongLucasSelfridge
     return 0;
 }
