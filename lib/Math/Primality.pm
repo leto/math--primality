@@ -54,7 +54,7 @@ sub debug {
     warn $_[0] if $ENV{DEBUG} or $DEBUG;
 }
 
-sub is_pseudoprime
+sub is_pseudoprime($;$)
 {
     my ($n, $base) = @_;
     return 0 unless $n;
@@ -74,7 +74,7 @@ sub is_pseudoprime
     return ! Rmpz_cmp_ui($mod, 1);       # pseudoprime if $mod = 1
 }
 
-sub _copy
+sub _copy($)
 {
     my ($n) = @_;
     return GMP->new($n);
@@ -95,7 +95,7 @@ The default base of 2 is used if no base is given.
 
 =cut
 
-sub is_strong_pseudoprime
+sub is_strong_pseudoprime($;$)
 {
     my ($n, $base) = @_;
 
@@ -156,9 +156,16 @@ sub is_strong_pseudoprime
     return 0;
 }
 
-sub is_strong_lucas_pseudoprime
+sub is_strong_lucas_pseudoprime($)
 {
-
+    my ($n) = @_;
+    $n      = GMP->new($n);
+    if ( Rmpz_perfect_square_p($n) ) {
+        return 0;
+    }
+    # determine Selfridge parameters D, P and Q
+    # translate code which computes lucas numbers in iStrongLucasSelfridge
+    return 0;
 }
 
 =head1 AUTHOR
