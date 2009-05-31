@@ -178,6 +178,7 @@ sub is_strong_lucas_pseudoprime($)
 #selfridge's method for finding the tuple (D,P,Q) for is_strong_lucas_pseudoprime
 sub _find_dpq_selfridge($) {
   my $n = shift;
+  $n      = GMP->new($n);
   # determine D
   my $d = 5;
   my $sign = 1;
@@ -186,7 +187,7 @@ sub _find_dpq_selfridge($) {
     $wd = $d * $sign;
     my $gcd = Math::GMPz->new;
 
-    Rmpz_gcd_ui($gcd, $n, $wd);
+    Rmpz_gcd_ui($gcd, $n, abs $wd);
     if ($gcd > 1 && Rmpz_cmp_ui($n, $gcd) > 0) {
       debug "1 < $gcd < $n => $n is composite with factor $wd";
       return 0;
