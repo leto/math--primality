@@ -14,6 +14,6 @@ TODO: {
       ok(is_strong_lucas_pseudoprime($z), "is_strong_lucas_pseudoprime should handle Math::GMPz objects");
       ok(is_strong_lucas_pseudoprime(2), "is_strong_lucas_pseudoprime should return true for 2");
       ok(is_strong_lucas_pseudoprime(705), "is_strong_lucas_pseudoprime should return true for the first lucas pseudoprime"); 
-}
+};
 
 ok(!is_strong_lucas_pseudoprime(9), 'is_strong_lucas_pseudoprime deals with perfect squares');

@@ -184,7 +184,9 @@ sub _find_dpq_selfridge($) {
   my $wd;
   while (1) {
     $wd = $d * $sign;
-    my $gcd = Rmpz_gcd_ui(undef, $n, $wd);
+    my $gcd = Math::GMPz->new;
+
+    Rmpz_gcd_ui($gcd, $n, $wd);
     if ($gcd > 1 && Rmpz_cmp_ui($n, $gcd) > 0) {
       debug "1 < $gcd < $n => $n is composite with factor $wd";
       return 0;
