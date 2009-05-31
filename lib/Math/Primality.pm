@@ -170,30 +170,47 @@ sub is_strong_lucas_pseudoprime($)
     return 0 if $cmp < 0;
     return 0 if Rmpz_even_p($n);
     # determine Selfridge parameters D, P and Q
-    # determine D
-    my $d = 5;
-    my $sign = 1;
-    while (1) {
-      my $wd = $d * $sign;
-      my $gcd = Rmpz_gcd_ui(undef, $n, $wd);
-      if ($gcd > 1 && Rmpz_cmp_ui($n, $gcd) > 0) {
-        debug "1 < $gcd < $n => $n is composite with factor $wd";
-        return 0;
-      }
-      my $j = Rmpz_jacobi(GMP->new($wd), $n);
-      if ($j == -1) {
-        debug "Rmpz_jacobi($wd, $n) == -1 => found D";
-        last; 
-      }
-      # didn't find D, increment and swap sign
-      $d += 2;
-      $sign = -$sign;
-      ### TODO ###
-      # need code to make sure we don't overflow $d 
-      ### TODO ###
-    }
+    my ($d, $p, $q) = _find_dpq_selfridge($n);
     # translate code which computes lucas numbers in iStrongLucasSelfridge
     return 0;
+}
+
+#selfridge's method for finding the tuple (D,P,Q) for is_strong_lucas_pseudoprime
+sub _find_dpq_selfridge($) {
+  my $n = shift;
+  # determine D
+  my $d = 5;
+  my $sign = 1;
+  my $wd;
+  while (1) {
+    $wd = $d * $sign;
+    my $gcd = Rmpz_gcd_ui(undef, $n, $wd);
+    if ($gcd > 1 && Rmpz_cmp_ui($n, $gcd) > 0) {
+      debug "1 < $gcd < $n => $n is composite with factor $wd";
+      return 0;
+    }
+    my $j = Rmpz_jacobi(GMP->new($wd), $n);
+    if ($j == -1) {
+      debug "Rmpz_jacobi($wd, $n) == -1 => found D";
+      last; 
+    }
+    # didn't find D, increment and swap sign
+    $d += 2;
+    $sign = -$sign;
+    ### TODO ###
+    # need code to make sure we don't overflow $d 
+    ### TODO ###
+  }
+  # P = 1
+  my $p = 1;
+  # Q = (1 - D) / 4
+  my $q = (1 - $wd) / 4;
+  return ($wd, $p, $q);
+}
+
+#alternate method for finding the tuple (D,P,Q) for is_strong_lucas_pseudoprime
+sub _find_dpq_alternate($) {
+
 }
 
 =head1 AUTHOR
