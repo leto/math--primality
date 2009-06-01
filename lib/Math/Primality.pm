@@ -95,6 +95,14 @@ The default base of 2 is used if no base is given.
 
 =cut
 
+sub _find_s_d($)
+{
+    my $m   = GMP->new($_[0]);
+    my $s   = Rmpz_scan1($m,0);
+    my $d   = GMP->new(0);
+    Rmpz_tdiv_q_2exp($d, $m,$s);
+    return ($s,$d);
+}
 sub is_strong_pseudoprime($;$)
 {
     my ($n, $base) = @_;
@@ -114,10 +122,7 @@ sub is_strong_pseudoprime($;$)
     my $m   = _copy($n);
     Rmpz_sub_ui($m,$m,1);
 
-    my $s   = Rmpz_scan1($m,0);
-    my $d   = GMP->new(0);
-
-    Rmpz_tdiv_q_2exp($d, $m,$s);
+    my ($s,$d) = _find_s_d($m);
     debug "m=$m, s=$s, d=$d";
 
     my $residue = GMP->new(0);
@@ -170,7 +175,13 @@ sub is_strong_lucas_pseudoprime($)
     return 0 if $cmp < 0;
     return 0 if Rmpz_even_p($n);
     # determine Selfridge parameters D, P and Q
-    my ($d, $p, $q) = _find_dpq_selfridge($n);
+    my ($D, $P, $Q) = _find_dpq_selfridge($n);
+
+    my $m = _copy($n);
+    Rmpz_add_ui($m, $m, 1);
+
+    my ($s,$d) = _find_s_d($m);
+
     # translate code which computes lucas numbers in iStrongLucasSelfridge
     return 0;
 }
