@@ -177,15 +177,13 @@ sub is_strong_lucas_pseudoprime($)
 
 #selfridge's method for finding the tuple (D,P,Q) for is_strong_lucas_pseudoprime
 sub _find_dpq_selfridge($) {
-  my $n = shift;
-  $n      = GMP->new($n);
+  my $n = GMP->new($_[0]);
+  my ($d,$sign,$wd) = (5,1,0);
+  my $gcd = Math::GMPz->new;
+
   # determine D
-  my $d = 5;
-  my $sign = 1;
-  my $wd;
   while (1) {
     $wd = $d * $sign;
-    my $gcd = Math::GMPz->new;
 
     Rmpz_gcd_ui($gcd, $n, abs $wd);
     if ($gcd > 1 && Rmpz_cmp_ui($n, $gcd) > 0) {
@@ -205,9 +203,12 @@ sub _find_dpq_selfridge($) {
     ### TODO ###
   }
   # P = 1
-  my $p = 1;
-  # Q = (1 - D) / 4
-  my $q = (1 - $wd) / 4;
+  my ($p,$q) = (1,0);
+  {
+      use integer;
+      # Q = (1 - D) / 4
+      $q = (1 - $wd) / 4;
+  }
   return ($wd, $p, $q);
 }
 
