@@ -11,6 +11,8 @@ my $builder = Module::Build->new(
     include_dirs        => '',
     build_requires => {
         'Test::More' => 0,
+    },
+    requires => {
         'Math::GMPz' => 0.26,
     },
     add_to_cleanup      => [ 'Math-Primality-*' ],
