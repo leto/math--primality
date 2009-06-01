@@ -20,7 +20,7 @@ Version 0.02
 
 our $VERSION = '0.03_01';
 
-our @EXPORT_OK = qw/is_pseudoprime is_strong_pseudoprime is_prime is_strong_lucas_pseudoprime _find_dpq_selfridge /;
+our @EXPORT_OK = qw/is_pseudoprime is_strong_pseudoprime is_prime is_strong_lucas_pseudoprime/;
 
 our %EXPORT_TAGS = ( all => \@EXPORT_OK );
 
@@ -95,14 +95,6 @@ The default base of 2 is used if no base is given.
 
 =cut
 
-sub _find_s_d($)
-{
-    my $m   = GMP->new($_[0]);
-    my $s   = Rmpz_scan1($m,0);
-    my $d   = GMP->new(0);
-    Rmpz_tdiv_q_2exp($d, $m,$s);
-    return ($s,$d);
-}
 sub is_strong_pseudoprime($;$)
 {
     my ($n, $base) = @_;
@@ -159,6 +151,16 @@ sub is_strong_pseudoprime($;$)
     } ( 1 .. $s-1 );
 
     return 0;
+}
+
+# given an odd number N find (s, d) such that N = d * 2^s + 1
+sub _find_s_d($)
+{
+    my $m   = GMP->new($_[0]);
+    my $s   = Rmpz_scan1($m,1);
+    my $d   = GMP->new(0);
+    Rmpz_tdiv_q_2exp($d,$m,$s);
+    return ($s,$d);
 }
 
 sub is_strong_lucas_pseudoprime($)
