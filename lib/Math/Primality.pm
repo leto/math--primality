@@ -178,7 +178,9 @@ sub is_strong_lucas_pseudoprime($)
     return 0 if Rmpz_even_p($n);
     # determine Selfridge parameters D, P and Q
     my ($D, $P, $Q) = _find_dpq_selfridge($n);
-
+    if ($D == 0) {  #_find_dpq_selfridge found a factor of N
+      return 0;
+    }
     my $m = _copy($n);
     Rmpz_add_ui($m, $m, 1);
 
@@ -280,7 +282,7 @@ sub _find_dpq_selfridge($) {
     $wd = $d * $sign;
 
     Rmpz_gcd_ui($gcd, $n, abs $wd);
-    if ($gcd > 1 && Rmpz_cmp_ui($n, $gcd) > 0) {
+    if ($gcd > 1 && Rmpz_cmp($n, $gcd) > 0) {
       debug "1 < $gcd < $n => $n is composite with factor $wd";
       return 0;
     }
