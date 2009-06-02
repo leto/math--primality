@@ -182,9 +182,89 @@ sub is_strong_lucas_pseudoprime($)
     my $m = _copy($n);
     Rmpz_add_ui($m, $m, 1);
 
+    # determine s and d such that m = d * 2^s + 1
     my ($s,$d) = _find_s_d($m);
-
-    # translate code which computes lucas numbers in iStrongLucasSelfridge
+    # compute U_d and V_d
+    # initalize U, V, U_2m, V_2m
+    my $U = GMP->new(1);     # U = U_1 = 1
+    my $V = GMP->new($P);    # V = V_1 = P
+    my $U_2m = GMP->new(1);  # U_2m = U_1
+    my $V_2m = GMP->new($P); # V_2m = P
+    # initalize Q values (eventually need to calculate Q^d, which will be used in later stages of test)
+    my $Q_m = GMP->new($Q);
+    my $Q2_m = GMP->new(2 * $Q);  # Really 2Q_m, but perl will barf with a variable named like that
+    my $Qkd = GMP->new($Q);
+    # start doubling the indicies!
+    my $dbits = Rmpz_sizeinbase($d);
+    for (my $i = 1; $i < $dbits; $i++) {  #since d is odd, the zeroth bit is on so we skip it
+      # U_2m = U_m * V_m (mod N)
+      Rmpz_mul($U_2m, $U_2m, $V_2m);  # U_2m = U_m * V_m
+      Rmpz_mod($U_2m, $U_2m, $n);     # U_2m = U_2m mod N
+      # V_2m = V_m * V_m - 2 * Q^m (mod N)
+      Rmpz_mul($V_2m, $V_2m, $V_2m);  # V_2m = V_2m * V_2m
+      Rmpz_sub($V_2m, $V_2m, $Q2_m);  # V_2m = V_2m - 2Q_m
+      Rmpz_mod($V_2m, $V_2m, $n);     # V_2m = V_2m mod N
+      # calculate powers of Q for V_2m and Q^d (used later)
+      # 2Q_m = 2 * Q_m * Q_m (mod N)
+      Rmpz_mul($Q_m, $Q_m, $Q_m);     # Q_m = Q_m * Q_m
+      Rmpz_mod($Q_m, $Q_m, $n);       # Q_m = Q_m mod N
+      Rmpz_mul_2exp($Q2_m, $Q_m, 1);  # 2Q_m = Q_m * 2
+      if (Rmpz_tstbit($d, $i)) {       # if bit i of d is set
+        # add some indicies
+        # initalize some temporary variables
+        my $T1 = GMP->new(0);
+        my $T2 = GMP->new(0);
+        my $T3 = GMP->new(0);
+        my $T4 = GMP->new(0);
+        # U_(m+n) = (U_m * V_n + U_n * V_m) / 2
+        # V_(m+n) = (V_m * V_n + D * U_m * U_n) / 2
+        Rmpz_mul($T1, $U_2m, $V);     # T1 = U_2m * V
+        Rmpz_mul($T2, $U, $V_2m);     # T2 = U * V_2m
+        Rmpz_mul($T3, $V_2m, $V);     # T3 = V_2m * V
+        Rmpz_mul($T4, $U_2m, $U);     # T4 = U_2m * U
+        Rmpz_mul_si($T4, $T4, $D);    # T4 = T4 - D
+        Rmpz_add($U, $T1, $T2);       # U = T1 + T2
+        if (Rmpz_odd_p($U)) {         # if U is odd
+          Rmpz_add($U, $U, $n);       # U = U + n
+        }
+        Rmpz_fdiv_q_2exp($U, $U, 1);  # U = floor(U / 2)
+        Rmpz_add($V, $T3, $T4);       # V = T3 + T4
+        if (Rmpz_odd_p($V)) {         # if V is odd
+          Rmpz_add($V, $V, $n);       # V = V + n 
+        }
+        Rmpz_fdiv_q_2exp($V, $V, 1);  # V = floor(V / 2)
+        Rmpz_mod($U, $U, $n);         # U = U mod N
+        Rmpz_mod($V, $V, $n);         # V = V mod N
+        # Get our Q^d calculating on (to be used later)
+        Rmpz_mul($Qkd, $Qkd, $Q_m);   # Qkd = Qkd * Q_m
+        Rmpz_mod($Qkd, $Qkd, $n);     # Qkd = Qkd mod N
+      }
+    }
+    # if U_d or V_d = 0 mod N, then N is prime or a strong Lucas pseudoprime
+    if(Rmpz_sgn($U) == 0 || Rmpz_sgn($V) == 0) {
+      return 1;
+    }
+    # ok, if we're still here, we have to compute V_2d, V_4d, V_8d, ..., V_{2^(s-1)*d}
+    # initalize 2Qkd
+    my $Q2kd = GMP->new;
+    Rmpz_mul_2exp($Q2kd, $Qkd, 1);    # 2Qkd = 2 * Qkd
+    # V_2m = V_m * V_m - 2 * Q^m
+    for (my $r = 1; $r < $s; $r++) {
+      Rmpz_mul($V, $V, $V);      # V = V * V;
+      Rmpz_sub($V, $V, $Q2kd);   # V = V - 2Qkd
+      Rmpz_mod($V, $V, $n);      # V = V mod N
+      # if V = 0 mod N then N is a prime or a strong Lucas pseudoprime
+      if(Rmpz_sgn($V) == 0) {
+        return 1;
+      }
+      # calculate Q ^(d * 2^r) for next r (unless on final iteration)
+      if ($r < ($s - 1)) {
+        Rmpz_mul($Qkd, $Qkd, $Qkd);     # Qkd = Qkd * Qkd
+        Rmpz_mod($Qkd, $Qkd, $n);       # Qkd = Qkd mod N
+        Rmpz_mul_2exp($Q2kd, $Qkd, 1);  # 2Qkd = 2 * Qkd
+      } 
+    }
+    # otherwise N is definitely composite 
     return 0;
 }
 
