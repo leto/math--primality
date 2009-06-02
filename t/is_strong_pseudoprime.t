@@ -2,13 +2,18 @@
 
 use strict;
 use warnings;
-use Test::More tests => 509;
+use Test::More tests => 512;
 use Math::Primality qw/ is_strong_pseudoprime /;
 use Math::GMPz;
 
 my $z = Math::GMPz->new(3);
 ok(is_strong_pseudoprime($z), 'is_strong_pseudoprime groks Math::GMPz objects');
 
+### test _check_two_and_even ###
+ok (Math::Primality::_check_two_and_even(2) == 1, '_check_two_and_even(2) should return 1');
+ok (Math::Primality::_check_two_and_even(20) == 0, '_check_two_and_even(20) should return 0');
+ok (Math::Primality::_check_two_and_even(1) == 0, '_check_two_and_even(1) should return 0');
+### test is_strong_pseudoprime ###
 ok(!is_strong_pseudoprime(-1),'-1 is not a spsp' );
 ok(!is_strong_pseudoprime(0),'0 is not a spsp' );
 ok(!is_strong_pseudoprime(1),'1 is not a spsp' );
