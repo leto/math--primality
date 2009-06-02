@@ -20,7 +20,7 @@ Version 0.02
 
 our $VERSION = '0.03_01';
 
-our @EXPORT_OK = qw/is_pseudoprime is_strong_pseudoprime is_prime is_strong_lucas_pseudoprime/;
+our @EXPORT_OK = qw/is_pseudoprime is_strong_pseudoprime is_strong_lucas_pseudoprime is_prime next_prime/;
 
 our %EXPORT_TAGS = ( all => \@EXPORT_OK );
 
@@ -195,7 +195,7 @@ sub is_strong_lucas_pseudoprime($)
     my $Q2_m = GMP->new(2 * $Q);  # Really 2Q_m, but perl will barf with a variable named like that
     my $Qkd = GMP->new($Q);
     # start doubling the indicies!
-    my $dbits = Rmpz_sizeinbase($d);
+    my $dbits = Rmpz_sizeinbase($d,2);
     for (my $i = 1; $i < $dbits; $i++) {  #since d is odd, the zeroth bit is on so we skip it
       # U_2m = U_m * V_m (mod N)
       Rmpz_mul($U_2m, $U_2m, $V_2m);  # U_2m = U_m * V_m
