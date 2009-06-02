@@ -216,19 +216,20 @@ sub is_strong_lucas_pseudoprime($)
         my $T2 = GMP->new(0);
         my $T3 = GMP->new(0);
         my $T4 = GMP->new(0);
+        # this is how we do it
         # U_(m+n) = (U_m * V_n + U_n * V_m) / 2
         # V_(m+n) = (V_m * V_n + D * U_m * U_n) / 2
         Rmpz_mul($T1, $U_2m, $V);     # T1 = U_2m * V
         Rmpz_mul($T2, $U, $V_2m);     # T2 = U * V_2m
         Rmpz_mul($T3, $V_2m, $V);     # T3 = V_2m * V
         Rmpz_mul($T4, $U_2m, $U);     # T4 = U_2m * U
-        Rmpz_mul_si($T4, $T4, $D);    # T4 = T4 - D
-        Rmpz_add($U, $T1, $T2);       # U = T1 + T2
+        Rmpz_mul_si($T4, $T4, $D);    # T4 = T4 * D = U_2m * U * D
+        Rmpz_add($U, $T1, $T2);       # U = T1 + T2 = U_2m * V - U * V_2m
         if (Rmpz_odd_p($U)) {         # if U is odd
           Rmpz_add($U, $U, $n);       # U = U + n
         }
         Rmpz_fdiv_q_2exp($U, $U, 1);  # U = floor(U / 2)
-        Rmpz_add($V, $T3, $T4);       # V = T3 + T4
+        Rmpz_add($V, $T3, $T4);       # V = T3 + T4 = V_2m * V + U_2m * U * D
         if (Rmpz_odd_p($V)) {         # if V is odd
           Rmpz_add($V, $V, $n);       # V = V + n 
         }
