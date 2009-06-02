@@ -2,8 +2,6 @@
 
 =head2 To be Done
 
-* Port iStrongLucasSelfridge(mpz_t) from spec/bpsw/trn.c , this will be is_strong_lucas_pseudoprime()
-
 * Port iBPSW from spec/bpsw/bpsw1.c
 
         is_prime($N) <==> iBPSW(N,1)
@@ -43,6 +41,8 @@ the necessary components of is_prime().
 
 * implement base b pseudoprime test, a.k.a n is in psp(b)
   this is is_pseudoprime()
+
+* Port iStrongLucasSelfridge(mpz_t) from spec/bpsw/trn.c , this will be is_strong_lucas_pseudoprime()
 
 =cut
 
