@@ -315,12 +315,28 @@ sub _find_dpq_alternate($) {
 
 # should do exactly what it says - returns true if number is prime, false if number is composite
 sub is_prime($) {
-
+  my $n = GMP->new($_[0]);
+  # first eliminate all n < 2 and even n > 3
+  # trial division of n up to some small number (perhaps a thousand)
+  # try Miller-Rabin strong psuedoprime test with base 2
+  # try Lucas-Selfridge strong psuedoprime test
+  # is a BPSW probable prime
+  return 1;
 }
 
 # given a number, produces the next prime number
 sub next_prime($) {
-
+  my $n = GMP->new($_[0]);
+  if (Rmpz_odd_p($n)) {         # if N is odd
+    Rmpz_add_ui($n, $n, 2);     # N = N + 2
+  } else {
+    Rmpz_add_ui($n, $n, 1);     # N = N + 1
+  }
+  # N is now the next odd number
+  while (1) {
+    return $n if is_prime($n);  # check primality of that number, return if prime
+    Rmpz_add_ui($n, $n, 2);     # N = N + 2
+  }
 }
 
 =head1 AUTHOR
