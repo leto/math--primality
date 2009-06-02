@@ -2,7 +2,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 20;
+use Test::More tests => 23;
 
 use Math::Primality qw/ is_strong_lucas_pseudoprime/;
 use Math::GMPz;
@@ -15,6 +15,10 @@ ok(is_strong_lucas_pseudoprime($z), "is_strong_lucas_pseudoprime should handle M
 ok(!is_strong_lucas_pseudoprime(9), 'is_strong_lucas_pseudoprime deals with perfect squares');
 ok(!is_strong_lucas_pseudoprime(16), 'is_strong_lucas_pseudoprime deals with perfect squares');
 ok(!is_strong_lucas_pseudoprime(100), 'is_strong_lucas_pseudoprime deals with perfect squares');
+### test _check_two_and_even ###
+ok (Math::Primality::_check_two_and_even(2) == 1, '_check_two_and_even(2) should return 1');
+ok (Math::Primality::_check_two_and_even(20) == 0, '_check_two_and_even(20) should return 0');
+ok (Math::Primality::_check_two_and_even(1) == 0, '_check_two_and_even(1) should return 0');
 ### first five strong Lucas psuedoprimes ###
 ok(is_strong_lucas_pseudoprime(5459), "is_strong_lucas_pseudoprime should return true for the first lucas pseudoprime"); 
 ok(is_strong_lucas_pseudoprime(5777), "is_strong_lucas_pseudoprime should return true for the second lucas pseudoprime"); 

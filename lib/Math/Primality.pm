@@ -104,9 +104,8 @@ sub is_strong_pseudoprime($;$)
     $base   = GMP->new($base);
     $n      = GMP->new($n);
 
-    my $cmp = Rmpz_cmp_ui($n, 2 );
-    return 1 if $cmp == 0;
-    return 0 if $cmp < 0;
+    my $cmp = _check_two_and_even($n);
+    return $cmp if $cmp != 2;
 
     # unnecessary but faster if $n is even
     return 0 if Rmpz_even_p($n);
@@ -172,10 +171,8 @@ sub is_strong_lucas_pseudoprime($)
         return 0;
     }
     # we also need to weed out all N < 3 and all even N 
-    my $cmp = Rmpz_cmp_ui($n, 2 );
-    return 1 if $cmp == 0;
-    return 0 if $cmp < 0;
-    return 0 if Rmpz_even_p($n);
+    my $cmp = _check_two_and_even($n);
+    return $cmp if $cmp != 2;
     # determine Selfridge parameters D, P and Q
     my ($D, $P, $Q) = _find_dpq_selfridge($n);
     if ($D == 0) {  #_find_dpq_selfridge found a factor of N
@@ -271,7 +268,7 @@ sub is_strong_lucas_pseudoprime($)
     return 0;
 }
 
-#selfridge's method for finding the tuple (D,P,Q) for is_strong_lucas_pseudoprime
+# selfridge's method for finding the tuple (D,P,Q) for is_strong_lucas_pseudoprime
 sub _find_dpq_selfridge($) {
   my $n = GMP->new($_[0]);
   my ($d,$sign,$wd) = (5,1,0);
@@ -305,18 +302,33 @@ sub _find_dpq_selfridge($) {
       # Q = (1 - D) / 4
       $q = (1 - $wd) / 4;
   }
+  debug "found P and Q: ($p, $q)";
   return ($wd, $p, $q);
 }
 
-#alternate method for finding the tuple (D,P,Q) for is_strong_lucas_pseudoprime
+# alternate method for finding the tuple (D,P,Q) for is_strong_lucas_pseudoprime
 sub _find_dpq_alternate($) {
 
+}
+
+# method returns 0 if N < two or even, returns 1 if N == 2
+# returns 2 if N > 2 and odd
+sub _check_two_and_even($) {
+  my $n = GMP->new($_[0]);
+
+  my $cmp = Rmpz_cmp_ui($n, 2 );
+  return 1 if $cmp == 0;
+  return 0 if $cmp < 0;
+  return 0 if Rmpz_even_p($n); 
+  return 2;
 }
 
 # should do exactly what it says - returns true if number is prime, false if number is composite
 sub is_prime($) {
   my $n = GMP->new($_[0]);
   # first eliminate all n < 2 and even n > 3
+  my $cmp = _check_two_and_even($n);
+  return $cmp if $cmp != 2;
   # trial division of n up to some small number (perhaps a thousand)
   # try Miller-Rabin strong psuedoprime test with base 2
   # try Lucas-Selfridge strong psuedoprime test
