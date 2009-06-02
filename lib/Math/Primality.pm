@@ -230,6 +230,16 @@ sub _find_dpq_alternate($) {
 
 }
 
+# should do exactly what it says - returns true if number is prime, false if number is composite
+sub is_prime($) {
+
+}
+
+# given a number, produces the next prime number
+sub next_prime($) {
+
+}
+
 =head1 AUTHOR
 
 Jonathan Leto, C<< <jonathan at leto.net> >>
