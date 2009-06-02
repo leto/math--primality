@@ -249,7 +249,7 @@ sub is_strong_lucas_pseudoprime($)
     # initalize 2Qkd
     my $Q2kd = GMP->new;
     Rmpz_mul_2exp($Q2kd, $Qkd, 1);    # 2Qkd = 2 * Qkd
-    # V_2m = V_m * V_m - 2 * Q^m
+    # V_2m = V_m * V_m - 2 * Q^m (mod N)
     for (my $r = 1; $r < $s; $r++) {
       Rmpz_mul($V, $V, $V);      # V = V * V;
       Rmpz_sub($V, $V, $Q2kd);   # V = V - 2Qkd
