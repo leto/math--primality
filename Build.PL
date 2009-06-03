@@ -11,6 +11,7 @@ my $builder = Module::Build->new(
     include_dirs        => '',
     build_requires => {
         'Test::More' => 0,
+        'Test::Exception' => 0,
     },
     requires => {
         'Math::GMPz' => 0.26,

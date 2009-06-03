@@ -162,6 +162,10 @@ sub _find_s_d($)
     return ($s,$d);
 }
 
+=head2 is_strong_lucas_pseudoprime($n)
+
+=cut
+
 sub is_strong_lucas_pseudoprime($)
 {
     my ($n) = @_;
@@ -319,21 +323,23 @@ sub _check_two_and_even($) {
   my $cmp = Rmpz_cmp_ui($n, 2 );
   return 1 if $cmp == 0;
   return 0 if $cmp < 0;
-  return 0 if Rmpz_even_p($n); 
+  return 0 if Rmpz_even_p($n);
   return 2;
 }
 
-# should do exactly what it says - returns true if number is prime, false if number is composite
+=head2 is_prime($n)
+
+Returns true if number is prime, false if number is composite.
+
+=cut
+
 sub is_prime($) {
   my $n = GMP->new($_[0]);
-  # first eliminate all n < 2 and even n > 3
-  my $cmp = _check_two_and_even($n);
-  return $cmp if $cmp != 2;
+  # TODO: 
   # trial division of n up to some small number (perhaps a thousand)
-  # try Miller-Rabin strong psuedoprime test with base 2
-  # try Lucas-Selfridge strong psuedoprime test
-  # is a BPSW probable prime
-  return 1;
+
+  # the lucas test is stronger so do it first
+  return is_strong_lucas_pseudoprime($n) && is_strong_pseudoprime($n,2);
 }
 
 # given a number, produces the next prime number
