@@ -2,7 +2,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 995;
+use Test::More tests => 498;
 
 use Math::Primality qw/next_prime/;
 use Math::GMPz;
@@ -44,5 +44,5 @@ my @small_primes = qw/
 my $n = 0;
 for (my $i = 0; $i < (scalar @small_primes) - 1; $i++) {
   $n = next_prime($small_primes[$i]);
-  ok( is("$n", "$small_primes[$i+1]", "blah"));
+  is("$n", "$small_primes[$i+1]", "the next prime after $small_primes[$i] is $small_primes[$i+1]");
 }
