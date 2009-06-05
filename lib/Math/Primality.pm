@@ -14,7 +14,7 @@ Math::Primality - Advanced Primality Algorithms using GMP
 
 =head1 VERSION
 
-Version 0.02
+Version 0.03_01
 
 =cut
 
@@ -30,6 +30,26 @@ our %EXPORT_TAGS = ( all => \@EXPORT_OK );
 
     my $t1 = is_pseudoprime($x,$base);
     my $t2 = is_strong_pseudoprime($x);
+
+    print "Prime!" if is_prime($outrageously_large_prime);
+
+    my $t3 = next_prime($x); 
+
+=head1 DESCRIPTION
+
+Math::Primality implements is_prime() and next_prime() as a replacement for Math::PARI::is_prime().  It uses the GMP library through Math::GMPz.  The is_prime() method is actually a Baillie-PSW primality test which consists of three steps:
+
+=over 4
+
+=item * Check N for small prime divisors p < 1000
+
+=item * Perform a strong Miller-Rabin probable prime test (base 2) on N
+
+=item * Perform a strong Lucas-Selfridge test on N (using the parameters suggested by Selfridge)
+
+=back
+
+At any point the function may return as definitely composite.  If not, N has passed the strong Baillie-PSW test and is either prime or a strong Baillie-PSW pseudoprime.  To date no counterexample (Baillie-PSW strong pseudoprime) is known to exist for N < 10^15.  Baillie-PSW requires O((log n)^3) bit operations.  See L<http://www.trnicely.net/misc/bpsw.html> for a more thorough introduction to the Baillie-PSW test. 
 
 =head1 EXPORT
 
@@ -163,6 +183,16 @@ sub _find_s_d($)
 }
 
 =head2 is_strong_lucas_pseudoprime($n)
+
+Returns true if $n is a strong Lucas-Selfridge pseudoprime, false otherwise.  The variable $n should be a Perl
+integer or a Math::GMPz object.  
+
+    if ( is_strong_lucas_pseudoprime($n) ) {
+        # it's a strong Lucas-Selfridge pseudoprime
+    } else {
+        # not a strong Lucas-Selfridge psuedoprime
+        # i.e. definitely composite
+    }
 
 =cut
 
@@ -310,11 +340,6 @@ sub _find_dpq_selfridge($) {
   return ($wd, $p, $q);
 }
 
-# alternate method for finding the tuple (D,P,Q) for is_strong_lucas_pseudoprime
-sub _find_dpq_alternate($) {
-
-}
-
 # method returns 0 if N < two or even, returns 1 if N == 2
 # returns 2 if N > 2 and odd
 sub _check_two_and_even($) {
@@ -329,7 +354,17 @@ sub _check_two_and_even($) {
 
 =head2 is_prime($n)
 
-Returns true if number is prime, false if number is composite.
+Returns true if number is prime*, false if number is composite.
+
+    if ( is_prime($n) ) {
+        # it's a prime
+    } else {
+        # definitely composite
+    }
+
+*is_prime() is implemented using the BPSW algorithim which is a combination of two probable-
+prime algorithims, the strong Miller-Rabin test and the strong Lucas-Selfridge test.  While no
+psuedoprime has been found for N < 10^15, this does not mean there is not a pseudoprime.
 
 =cut
 
@@ -341,8 +376,14 @@ sub is_prime($) {
   # the lucas test is stronger so do it first
   return is_strong_lucas_pseudoprime($n) && is_strong_pseudoprime($n,2);
 }
+=head2 next_prime($2)
 
-# given a number, produces the next prime number
+Given a number, produces the next prime number.
+
+    my $q = next_prime($n);
+
+=cut
+
 sub next_prime($) {
   my $n = GMP->new($_[0]);
   if (Rmpz_odd_p($n)) {         # if N is odd
