@@ -1,6 +1,20 @@
 =head1 ROADMAP
 
+=head2 References
+
+* Description of PARI primality algorithms: http://www.math.u-bordeaux.fr/~belabas/pari/doc/faq.html
+
 =head2 To be Done
+
+* More user documentation, explain the general idea of the algorithm used
+
+=head2 Hairy Details
+
+* Math::GMPz implements all the hairy details of GMP
+
+=head2 Other Possibilities
+
+=head2 Already Done
 
 * Port iBPSW from spec/bpsw/bpsw1.c
 
@@ -29,14 +43,6 @@ number.
 This should only require a small number of tests, most of the work is in making
 the necessary components of is_prime().
 
-=head2 Hairy Details
-
-* Math::GMPz implements all the hairy details of GMP
-
-=head2 Other Possibilities
-
-=head2 Already Done
-
 * Port iMillerRabin from spec/bpsw/trn.c , this will be is_strong_pseudoprime()
 
 * implement base b pseudoprime test, a.k.a n is in psp(b)
@@ -44,5 +50,10 @@ the necessary components of is_prime().
 
 * Port iStrongLucasSelfridge(mpz_t) from spec/bpsw/trn.c , this will be is_strong_lucas_pseudoprime()
 
+
 =cut
 
+
+=head2 References 
+
+* Description of PARI primality algorithms: http://www.math.u-bordeaux.fr/~belabas/pari/doc/faq.html
