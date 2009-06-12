@@ -2,7 +2,6 @@
 
 use strict;
 use warnings;
-use Data::Dumper;
 use Test::More tests => 573;
 use Test::Exception;
 use Math::Primality qw/is_prime/;
