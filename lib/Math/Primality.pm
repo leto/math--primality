@@ -49,7 +49,7 @@ Math::Primality implements is_prime() and next_prime() as a replacement for Math
 
 =back
 
-At any point the function may return as definitely composite.  If not, N has passed the strong Baillie-PSW test and is either prime or a strong Baillie-PSW pseudoprime.  To date no counterexample (Baillie-PSW strong pseudoprime) is known to exist for N < 10^15.  Baillie-PSW requires O((log n)^3) bit operations.  See L<http://www.trnicely.net/misc/bpsw.html> for a more thorough introduction to the Baillie-PSW test. 
+At any point the function may return as definitely composite.  If not, N has passed the strong Baillie-PSW test and is either prime or a strong Baillie-PSW pseudoprime.  To date no counterexample (Baillie-PSW strong pseudoprime) is known to exist for N < 10^15.  Baillie-PSW requires O((log n)^3) bit operations.  See L<http://www.trnicely.net/misc/bpsw.html> for a more thorough introduction to the Baillie-PSW test. Also see L<http://mpqs.free.fr/LucasPseudoprimes.pdf> for a more theoretical introduction to the Baillie-PSW test. 
 
 =head1 EXPORT
 
@@ -68,11 +68,11 @@ The default base of 2 is used if no base is given. Base 2 pseudoprimes are often
         # not a psuedoprime
     }
 
-=cut
+=head3 Details
 
-sub debug {
-    warn $_[0] if $ENV{DEBUG} or $DEBUG;
-}
+A pseudoprime is a number that satisfies Fermat's Little Theorm, that is, $b^ ($n - 1) = 1 mod $n.
+
+=cut
 
 sub is_pseudoprime($;$)
 {
@@ -94,6 +94,10 @@ sub is_pseudoprime($;$)
     return ! Rmpz_cmp_ui($mod, 1);       # pseudoprime if $mod = 1
 }
 
+sub debug {
+    warn $_[0] if $ENV{DEBUG} or $DEBUG;
+}
+
 sub _copy($)
 {
     my ($n) = @_;
@@ -113,6 +117,22 @@ The default base of 2 is used if no base is given.
         # not a strong psuedoprime
     }
 
+=head3 Details
+
+A strong pseudoprime to $base is an odd number $n with ($n - 1) = $d * 2^$s that either satisfies
+
+=over 4
+
+=item * $base^$d = 1 mod $n
+
+=item * $base^($d * 2^$r) = -1 mod $n, for $r = 0, 1, ..., $s-1
+
+=back
+
+=head3 Notes
+
+$s and $d are calculated with the helper function _find_s_d() and the second condition is checked by sucessive squaring $base^$d and reducing that mod $n.
+
 =cut
 
 sub is_strong_pseudoprime($;$)
@@ -124,11 +144,9 @@ sub is_strong_pseudoprime($;$)
     $base   = GMP->new($base);
     $n      = GMP->new($n);
 
+    # unnecessary but faster if $n is even
     my $cmp = _check_two_and_even($n);
     return $cmp if $cmp != 2;
-
-    # unnecessary but faster if $n is even
-    return 0 if Rmpz_even_p($n);
 
     my $m   = _copy($n);
     Rmpz_sub_ui($m,$m,1);
@@ -194,19 +212,49 @@ integer or a Math::GMPz object.
         # i.e. definitely composite
     }
 
+=head3 Details
+
+If we let
+
+=over 4
+
+=item * $D be the first element of the sequence 5, -7, 9, -11, 13, ... for which ($D/$n) = -1.  Let $P = 1 and $Q = (1 - $D) /4
+
+=item * U($P, $Q) and V($P, $Q) be Lucas sequences
+
+=item * $n + 1 = $d * 2^$s + 1
+
+=back
+
+Then a strong Lucas-Selfridge pseudoprime is an odd, non-perfect square number $n with that satisfies either
+
+=over 4
+
+=item * U_$d = 0 mod $n
+
+=item * V_($d * 2^$r) = 0 mod $n, for $r = 0, 1, ..., $s-1
+
+=back
+
+=head3 Notes
+
+($d/$n) refers to the Legendre symbol.
+The tuple ($D, $P, $Q) is determined by the helper function _find_dpq_selfridge(). 
+$d and $s are determined by the helper function _find_s_d().
+
 =cut
 
 sub is_strong_lucas_pseudoprime($)
 {
     my ($n) = @_;
     $n      = GMP->new($n);
+    # we also need to weed out all N < 3 and all even N 
+    my $cmp = _check_two_and_even($n);
+    return $cmp if $cmp != 2;
     # weed out all perfect squares
     if ( Rmpz_perfect_square_p($n) ) {
         return 0;
     }
-    # we also need to weed out all N < 3 and all even N 
-    my $cmp = _check_two_and_even($n);
-    return $cmp if $cmp != 2;
     # determine Selfridge parameters D, P and Q
     my ($D, $P, $Q) = _find_dpq_selfridge($n);
     if ($D == 0) {  #_find_dpq_selfridge found a factor of N
@@ -326,7 +374,7 @@ sub _find_dpq_selfridge($) {
     $d += 2;
     $sign = -$sign;
     ### TODO ###
-    # need code to make sure we don't overflow $d 
+    # need code to make sure we don't overflow $d, may never actually happen
     ### TODO ###
   }
   # P = 1
@@ -354,7 +402,7 @@ sub _check_two_and_even($) {
 
 =head2 is_prime($n)
 
-Returns true if number is prime*, false if number is composite.
+Returns true if number is prime, false if number is composite.
 
     if ( is_prime($n) ) {
         # it's a prime
@@ -362,9 +410,16 @@ Returns true if number is prime*, false if number is composite.
         # definitely composite
     }
 
-*is_prime() is implemented using the BPSW algorithim which is a combination of two probable-
-prime algorithims, the strong Miller-Rabin test and the strong Lucas-Selfridge test.  While no
+=head3 Details
+
+is_prime() is implemented using the BPSW algorithim which is a combination of two probable-prime 
+algorithims, the strong Miller-Rabin test and the strong Lucas-Selfridge test.  While no
 psuedoprime has been found for N < 10^15, this does not mean there is not a pseudoprime.
+
+=head3 Notes
+
+The strong Miller-Rabin test is implemented by is_strong_pseudoprime(). The strong Lucas-Selfridge test is implemented
+by is_strong_lucas_pseudoprime().
 
 =cut
 
@@ -381,6 +436,14 @@ sub is_prime($) {
 Given a number, produces the next prime number.
 
     my $q = next_prime($n);
+
+=head3 Details
+
+Each next greatest odd number is checked until one is found to be prime
+
+=head3 Notes
+
+Checking of primality is implemented by is_prime()
 
 =cut
 
