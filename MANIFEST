@@ -23,3 +23,4 @@ t/is_strong_pseudoprime.t
 t/next_prime.t
 t/pod.t
 xt/verify_strong.t
+xt/verify_is_prime.t
