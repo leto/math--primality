@@ -1,4 +1,4 @@
-#!/opt/local/bin/perl5.10 -w
+#!/usr/bin/env perl -w
 use strict;
 use lib 'lib';
 
