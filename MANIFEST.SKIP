@@ -13,3 +13,4 @@ foo*
 ^tags
 Math-Primality-\d+\..*
 xt/spsp*
+.prove
