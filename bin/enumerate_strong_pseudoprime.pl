@@ -11,6 +11,6 @@ die "USAGE:$0 base start end\n" unless ($base && $start >= 0 && $end > $start);
 my $i=$start;
 
 print "Generating spsp($base)\n";
-while ( $i++ <= $end ){
+while ( $i++ < $end ){
     print "$i\n" if is_strong_pseudoprime($i,$base) && !is_prime($i);
 }

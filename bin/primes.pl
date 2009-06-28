@@ -10,6 +10,6 @@ die "USAGE:$0 start end\n" unless ($start >= 0 && $end > $start);
 
 my $i=$start;
 
-while ( $i++ <= $end ){
+while ( $i++ < $end ){
     print "$i\n" if is_prime($i);
 }
