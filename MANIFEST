@@ -1,4 +1,5 @@
-bin/enumerate_strong_pseudoprime.pl
+bin/primes.pl
+bin/strong_psuedoprimes.pl
 Build.PL
 Changes
 CREDITS
