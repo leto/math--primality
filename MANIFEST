@@ -1,4 +1,5 @@
-bin/enumerate_strong_pseudoprime.pl
+bin/primes.pl
+bin/strong_psuedoprimes.pl
 Build.PL
 Changes
 CREDITS
@@ -22,5 +23,6 @@ t/is_strong_lucas_pseudoprime.t
 t/is_strong_pseudoprime.t
 t/next_prime.t
 t/pod.t
-xt/verify_strong.t
+t/prime_count.t
 xt/verify_is_prime.t
+xt/verify_strong.t

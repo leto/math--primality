@@ -10,6 +10,7 @@ resources:
 requires:
   Math::GMPz: 0.26
 build_requires:
+  Test::Exception: 0
   Test::More: 0
 provides:
   Math::Primality:

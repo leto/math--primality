@@ -20,7 +20,7 @@ Version 0.03_01
 
 our $VERSION = '0.03_01';
 
-our @EXPORT_OK = qw/is_pseudoprime is_strong_pseudoprime is_strong_lucas_pseudoprime is_prime next_prime/;
+our @EXPORT_OK = qw/is_pseudoprime is_strong_pseudoprime is_strong_lucas_pseudoprime is_prime next_prime prime_count/;
 
 our %EXPORT_TAGS = ( all => \@EXPORT_OK );
 
@@ -431,7 +431,7 @@ sub is_prime($) {
   # the lucas test is stronger so do it first
   return is_strong_lucas_pseudoprime($n) && is_strong_pseudoprime($n,2);
 }
-=head2 next_prime($2)
+=head2 next_prime($x)
 
 Given a number, produces the next prime number.
 
@@ -459,6 +459,19 @@ sub next_prime($) {
     return $n if is_prime($n);  # check primality of that number, return if prime
     Rmpz_add_ui($n, $n, 2);     # N = N + 2
   }
+}
+
+=head2 prime_count($n)
+
+Returns the count of the number of primes less than or equal to $n. This is the
+prime counting function.
+
+=cut
+
+sub prime_count($) {
+  my $n = GMP->new($_[0]);
+  return 0 if $n <= 1;
+  return 1;
 }
 
 =head1 AUTHOR
