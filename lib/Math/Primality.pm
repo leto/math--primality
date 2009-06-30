@@ -470,9 +470,16 @@ prime counting function.
 
 sub prime_count($) {
   my $n = GMP->new($_[0]);
-  return 0 if $n <= 1;
-  return 1;
+  my $primes = 0;
+  return 0 if $n <= 1; 
+  for (my $i = GMP->new(0); Rmpz_cmp($i, $n) <= 0; Rmpz_add_ui($i, $i, 1)) {
+    if (is_prime($i)) {
+      $primes++;
+    }
+  }
+  return $primes;
 }
+
 
 =head1 AUTHOR
 
