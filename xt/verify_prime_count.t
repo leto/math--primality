@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use lib 'lib';
 use Test::More tests=> 11;
+$|++;
 
 use Math::Primality qw/ prime_count /;
 
@@ -11,9 +12,10 @@ use Math::Primality qw/ prime_count /;
 
 my $i = 1;
 while (<DATA>) {
-  chomp;
-  ok ( prime_count(10**$i) == $_, "$_ primes <= 10^$i");
-  $i++;
+    print "i=$i\n";
+    chomp;
+    ok ( prime_count(10**$i) == $_, "$_ primes <= 10^$i");
+    $i++;
 }
 
 __DATA__
