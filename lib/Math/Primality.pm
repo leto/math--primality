@@ -449,6 +449,10 @@ Checking of primality is implemented by is_prime()
 
 sub next_prime($) {
   my $n = GMP->new($_[0]);
+  my $cmp = Rmpz_cmp_ui($n, 2 ); #check if $n < 2
+  if ($cmp < 0) {
+    return GMP->new(2);
+  }
   if (Rmpz_odd_p($n)) {         # if N is odd
     Rmpz_add_ui($n, $n, 2);     # N = N + 2
   } else {
