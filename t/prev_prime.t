@@ -2,7 +2,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 498;
+use Test::More tests => 500;
 
 use Math::Primality qw/prev_prime/;
 use Math::GMPz;
@@ -10,7 +10,9 @@ use Math::GMPz;
 ### basic method handling ###
 my $z = Math::GMPz->new(3);
 my $p = prev_prime($z);
-is("$p", "2", "next_prime should handle Math::GMPz objects, 2 is the previous prime before 3");
+is("$p", "2", "prev_prime should handle Math::GMPz objects, 2 is the previous prime before 3");
+is(prev_prime(2), undef, "prev_prime should return undef for 2 and below");
+is(prev_prime(0), undef, "prev_prime should return undef for 2 and below");
 
 ### test small primes ###
 my @small_primes = qw/
