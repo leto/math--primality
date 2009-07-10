@@ -469,13 +469,12 @@ prime counting function.
 =cut
 
 sub prime_count($) {
-  my $n = GMP->new($_[0]);
+  my $n = GMP->new($_[0]); # check if $n needs to be a Math::GMPz object
   my $primes = 0;
-  return 0 if $n <= 1; 
+  return 0 if $n <= 1;
+
   for (my $i = GMP->new(0); Rmpz_cmp($i, $n) <= 0; Rmpz_add_ui($i, $i, 1)) {
-    if (is_prime($i)) {
-      $primes++;
-    }
+    $primes++ if is_prime($i);
   }
   return $primes;
 }
