@@ -5,6 +5,7 @@ use warnings;
 use lib 'lib';
 use File::Spec::Functions;
 #use Test::More tests => 1000000;
+use Test::More;
 print "1..1000000\n";
 use Math::Primality qw/ is_prime /;
 $|++; #flush the output buffer after every write() or print() function
