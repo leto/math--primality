@@ -1,0 +1,18 @@
+#!/usr/bin/perl5.10 -w
+
+use strict;
+use 5.010;
+use Math::GSL::RNG;
+use Math::Pari qw/isprime/;
+use Math::Primality qw/is_prime/;
+use Data::Dumper;
+use Benchmark;
+my $count = shift || 5000;
+
+my $rng = Math::GSL::RNG->new;
+my @small_nums = map { $_ % 1000 } $rng->get(100);
+
+timethese($count,{
+    'is_prime' => sub { is_prime($_) for @small_nums },
+    'isprime' => sub { isprime($_) for @small_nums },
+});
