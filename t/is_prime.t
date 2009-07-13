@@ -2,7 +2,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 573;
+use Test::More tests => 572;
 use Test::Exception;
 use Math::Primality qw/is_prime/;
 use Math::GMPz qw/:mpz/;
