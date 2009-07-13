@@ -16,11 +16,12 @@ Math::Primality - Advanced Primality Algorithms using GMP
 
 =head1 VERSION
 
-Version 0.03_01
+Version 0.03_02
 
 =cut
 
-our $VERSION = '0.03_01';
+our $VERSION = '0.03_02';
+$VERSION = eval $VERSION;
 
 our @EXPORT_OK = qw/is_pseudoprime is_strong_pseudoprime is_strong_lucas_pseudoprime is_prime next_prime prime_count/;
 
@@ -30,12 +31,12 @@ our %EXPORT_TAGS = ( all => \@EXPORT_OK );
 
     use Math::Primality qw/:all/;
 
-    my $t1 = is_pseudoprime($x,$base);
-    my $t2 = is_strong_pseudoprime($x);
+    my $is_psp  = is_pseudoprime($x,$base);
+    my $is_spsp = is_strong_pseudoprime($x);
 
     print "Prime!" if is_prime($outrageously_large_prime);
 
-    my $t3 = next_prime($x); 
+    my $next = next_prime($x);
 
 =head1 DESCRIPTION
 
