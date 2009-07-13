@@ -44,5 +44,5 @@ my @small_primes = qw/
 my $n = 0;
 for (my $i = 0; $i < (scalar @small_primes) - 1; $i++) {
   $n = next_prime($small_primes[$i]);
-  is("$n", "$small_primes[$i+1]", "the next prime after $small_primes[$i] is $small_primes[$i+1]");
+  is("$n", "$small_primes[$i+1]", "the next prime after $small_primes[$i] is $small_primes[$i+1] ?= $n");
 }

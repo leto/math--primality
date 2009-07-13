@@ -8,9 +8,11 @@ use Math::Primality qw/prime_count/;
 use Math::GMPz;
 
 my $i = 0;
+my $primes;
 while (<DATA>) {
   chomp;
-  ok ( prime_count ($i) == $_, "$_ primes <= $i");
+  $primes = prime_count($i);
+  ok ( $primes == $_, "$primes ?= $_ = prime_count($i)");
   $i++;
 }
 

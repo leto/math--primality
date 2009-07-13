@@ -4,6 +4,8 @@ use strict;
 use Data::Dumper;
 use Math::GMPz qw/:mpz/;
 use base 'Exporter';
+use Carp qw/croak/;
+
 our $DEBUG = 0;
 
 use constant GMP => 'Math::GMPz';
@@ -92,6 +94,20 @@ sub is_pseudoprime($;$)
     my $mod = _copy($base);
     Rmpz_powm($mod, $base, $m, $n );
     return ! Rmpz_cmp_ui($mod, 1);       # pseudoprime if $mod = 1
+}
+
+sub is_small_prime
+{
+    my $n = shift;
+    my @small_primes = qw/
+    2 3 5   7   11  13  17  19  23  29  31  37  41  43  47  53  59  61  67  71 73  79
+    83  89  97  101     103     107     109     113     127     131     137     139
+    149     151     157     163     167     173 179     181     191     193     197
+    199     211     223     227     229     233     239   241     251     257
+    /;
+    my %small_primes = map { $_ => 1 } @small_primes;
+    return $small_primes{$n} ? 1 : 0;
+
 }
 
 sub debug {
@@ -424,13 +440,19 @@ by is_strong_lucas_pseudoprime().
 =cut
 
 sub is_prime($) {
-  my $n = GMP->new($_[0]);
-  # TODO: 
-  # trial division of n up to some small number (perhaps a thousand)
+    my $n = shift;
+    if ($n <= 257) {
+        return is_small_prime($n);
+    }
 
-  # the lucas test is stronger so do it first
-  return is_strong_lucas_pseudoprime($n) && is_strong_pseudoprime($n,2);
+    # TODO: 
+    # trial division of n up to some small number (perhaps a thousand)
+    
+    # the lucas test is stronger so do it first
+    # $n = GMP->new($n);
+    return is_strong_lucas_pseudoprime($n) && is_strong_pseudoprime($n,2);
 }
+
 =head2 next_prime($x)
 
 Given a number, produces the next prime number.
