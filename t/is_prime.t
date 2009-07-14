@@ -2,7 +2,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 572;
+use Test::More tests => 573;
 use Test::Exception;
 use Math::Primality qw/is_prime/;
 use Math::GMPz qw/:mpz/;
@@ -79,3 +79,11 @@ map { ok(!is_prime($_), "Pseudoprime (base 2) $_ is not prime" ) } qw/
  2465 2701 2821 3277 4033 4369 4371
  4681 5461 6601 7957 8321
 /;
+
+{
+    local $TODO = 'fix this';
+    throws_ok( sub { is_prime('foo') },
+        qr/First argument supplied to Rmpz_init_set_str/,
+        'is_prime warns about string not being valid');
+}
+

@@ -5,6 +5,63 @@ use Data::Dumper;
 use Math::GMPz qw/:mpz/;
 use base 'Exporter';
 use Carp qw/croak/;
+my %small_primes = (
+    2   => 1,
+    3   => 1,
+    5   => 1,
+    7   => 1,
+    11  => 1,
+    13  => 1,
+    17  => 1,
+    19  => 1,
+    23  => 1,
+    29  => 1,
+    31  => 1,
+    37  => 1,
+    41  => 1,
+    43  => 1,
+    47  => 1,
+    53  => 1,
+    59  => 1,
+    61  => 1,
+    67  => 1,
+    71  => 1,
+    73  => 1,
+    79  => 1,
+    83  => 1,
+    89  => 1,
+    97  => 1,
+    101 => 1,
+    103 => 1,
+    107 => 1,
+    109 => 1,
+    113 => 1,
+    127 => 1,
+    131 => 1,
+    137 => 1,
+    139 => 1,
+    149 => 1,
+    151 => 1,
+    157 => 1,
+    163 => 1,
+    167 => 1,
+    173 => 1,
+    179 => 1,
+    181 => 1,
+    191 => 1,
+    193 => 1,
+    197 => 1,
+    199 => 1,
+    211 => 1,
+    223 => 1,
+    227 => 1,
+    229 => 1,
+    233 => 1,
+    239 => 1,
+    241 => 1,
+    251 => 1,
+    257 => 1,
+);
 
 our $DEBUG = 0;
 
@@ -23,6 +80,7 @@ Version 0.03_02
 our $VERSION = '0.03_02';
 $VERSION = eval $VERSION;
 
+
 our @EXPORT_OK = qw/is_pseudoprime is_strong_pseudoprime is_strong_lucas_pseudoprime is_prime next_prime prime_count/;
 
 our %EXPORT_TAGS = ( all => \@EXPORT_OK );
@@ -31,12 +89,12 @@ our %EXPORT_TAGS = ( all => \@EXPORT_OK );
 
     use Math::Primality qw/:all/;
 
-    my $is_psp  = is_pseudoprime($x,$base);
-    my $is_spsp = is_strong_pseudoprime($x);
+    my $t1 = is_pseudoprime($x,$base);
+    my $t2 = is_strong_pseudoprime($x);
 
     print "Prime!" if is_prime($outrageously_large_prime);
 
-    my $next = next_prime($x);
+    my $t3 = next_prime($x); 
 
 =head1 DESCRIPTION
 
@@ -100,13 +158,6 @@ sub is_pseudoprime($;$)
 sub is_small_prime
 {
     my $n = shift;
-    my @small_primes = qw/
-    2 3 5   7   11  13  17  19  23  29  31  37  41  43  47  53  59  61  67  71 73  79
-    83  89  97  101     103     107     109     113     127     131     137     139
-    149     151     157     163     167     173 179     181     191     193     197
-    199     211     223     227     229     233     239   241     251     257
-    /;
-    my %small_primes = map { $_ => 1 } @small_primes;
     return $small_primes{$n} ? 1 : 0;
 
 }
