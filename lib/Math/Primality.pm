@@ -491,17 +491,26 @@ by is_strong_lucas_pseudoprime().
 
 =cut
 
+# If n < 9,080,191 is a both 31 and 73-SPRP, then n is prime.
+# If n < 4,759,123,141 is a 2, 7 and 61-SPRP, then n is prime.
+# http://primes.utm.edu/prove/prove2_3.html
+
 sub is_prime($) {
     my $n = shift;
+
     if ($n <= 257) {
         return is_small_prime($n);
+    } elsif ( $n < 9_080_191 ) {
+        return 0 unless is_strong_pseudoprime($n,31);
+        return 0 unless is_strong_pseudoprime($n,73);
+        return 1;
+    } elsif ( $n < 4_759_123_141 ) {
+        return 0 unless is_strong_pseudoprime($n,2);
+        return 0 unless is_strong_pseudoprime($n,7);
+        return 0 unless is_strong_pseudoprime($n,61);
+        return 1;
     }
-
-    # TODO: 
-    # trial division of n up to some small number (perhaps a thousand)
-    
     # the lucas test is stronger so do it first
-    # $n = GMP->new($n);
     return is_strong_lucas_pseudoprime($n) && is_strong_pseudoprime($n,2);
 }
 
