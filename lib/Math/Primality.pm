@@ -4,6 +4,65 @@ use strict;
 use Data::Dumper;
 use Math::GMPz qw/:mpz/;
 use base 'Exporter';
+use Carp qw/croak/;
+my %small_primes = (
+    2   => 1,
+    3   => 1,
+    5   => 1,
+    7   => 1,
+    11  => 1,
+    13  => 1,
+    17  => 1,
+    19  => 1,
+    23  => 1,
+    29  => 1,
+    31  => 1,
+    37  => 1,
+    41  => 1,
+    43  => 1,
+    47  => 1,
+    53  => 1,
+    59  => 1,
+    61  => 1,
+    67  => 1,
+    71  => 1,
+    73  => 1,
+    79  => 1,
+    83  => 1,
+    89  => 1,
+    97  => 1,
+    101 => 1,
+    103 => 1,
+    107 => 1,
+    109 => 1,
+    113 => 1,
+    127 => 1,
+    131 => 1,
+    137 => 1,
+    139 => 1,
+    149 => 1,
+    151 => 1,
+    157 => 1,
+    163 => 1,
+    167 => 1,
+    173 => 1,
+    179 => 1,
+    181 => 1,
+    191 => 1,
+    193 => 1,
+    197 => 1,
+    199 => 1,
+    211 => 1,
+    223 => 1,
+    227 => 1,
+    229 => 1,
+    233 => 1,
+    239 => 1,
+    241 => 1,
+    251 => 1,
+    257 => 1,
+);
+
 our $DEBUG = 0;
 
 use constant GMP => 'Math::GMPz';
@@ -14,11 +73,13 @@ Math::Primality - Advanced Primality Algorithms using GMP
 
 =head1 VERSION
 
-Version 0.03_01
+Version 0.03_02
 
 =cut
 
-our $VERSION = '0.03_01';
+our $VERSION = '0.03_02';
+$VERSION = eval $VERSION;
+
 
 our @EXPORT_OK = qw/is_pseudoprime is_strong_pseudoprime is_strong_lucas_pseudoprime is_prime next_prime prev_prime prime_count/;
 
@@ -92,6 +153,13 @@ sub is_pseudoprime($;$)
     my $mod = _copy($base);
     Rmpz_powm($mod, $base, $m, $n );
     return ! Rmpz_cmp_ui($mod, 1);       # pseudoprime if $mod = 1
+}
+
+sub is_small_prime
+{
+    my $n = shift;
+    return $small_primes{$n} ? 1 : 0;
+
 }
 
 sub debug {
@@ -423,13 +491,27 @@ by is_strong_lucas_pseudoprime().
 
 =cut
 
-sub is_prime($) {
-  my $n = GMP->new($_[0]);
-  # TODO: 
-  # trial division of n up to some small number (perhaps a thousand)
+# If n < 9,080,191 is a both 31 and 73-SPRP, then n is prime.
+# If n < 4,759,123,141 is a 2, 7 and 61-SPRP, then n is prime.
+# http://primes.utm.edu/prove/prove2_3.html
 
-  # the lucas test is stronger so do it first
-  return is_strong_lucas_pseudoprime($n) && is_strong_pseudoprime($n,2);
+sub is_prime($) {
+    my $n = shift;
+
+    if ($n <= 257) {
+        return is_small_prime($n);
+    } elsif ( $n < 9_080_191 ) {
+        return 0 unless is_strong_pseudoprime($n,31);
+        return 0 unless is_strong_pseudoprime($n,73);
+        return 1;
+    } elsif ( $n < 4_759_123_141 ) {
+        return 0 unless is_strong_pseudoprime($n,2);
+        return 0 unless is_strong_pseudoprime($n,7);
+        return 0 unless is_strong_pseudoprime($n,61);
+        return 1;
+    }
+    # the lucas test is stronger so do it first
+    return is_strong_lucas_pseudoprime($n) && is_strong_pseudoprime($n,2);
 }
 
 =head2 next_prime($x)
