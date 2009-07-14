@@ -81,7 +81,7 @@ our $VERSION = '0.03_02';
 $VERSION = eval $VERSION;
 
 
-our @EXPORT_OK = qw/is_pseudoprime is_strong_pseudoprime is_strong_lucas_pseudoprime is_prime next_prime prime_count/;
+our @EXPORT_OK = qw/is_pseudoprime is_strong_pseudoprime is_strong_lucas_pseudoprime is_prime next_prime prev_prime prime_count/;
 
 our %EXPORT_TAGS = ( all => \@EXPORT_OK );
 
@@ -523,6 +523,10 @@ Checking of primality is implemented by is_prime()
 
 sub next_prime($) {
   my $n = GMP->new($_[0]);
+  my $cmp = Rmpz_cmp_ui($n, 2 ); #check if $n < 2
+  if ($cmp < 0) {
+    return GMP->new(2);
+  }
   if (Rmpz_odd_p($n)) {         # if N is odd
     Rmpz_add_ui($n, $n, 2);     # N = N + 2
   } else {
@@ -532,6 +536,43 @@ sub next_prime($) {
   while (1) {
     return $n if is_prime($n);  # check primality of that number, return if prime
     Rmpz_add_ui($n, $n, 2);     # N = N + 2
+  }
+}
+
+=head2 prev_prime($x)
+
+Given a number, produces the previous prime number.
+
+    my $q = prev_prime($n);
+
+=head3 Details
+
+Each previous odd number is checked until one is found to be prime.  prev_prime(2) or for any number less than 2 returns undef
+
+=head3 Notes
+
+Checking of primality is implemented by is_prime()
+
+=cut
+
+sub prev_prime($) {
+  my $n = GMP->new($_[0]);
+  my $cmp = Rmpz_cmp_ui($n, 3);   # compare N with 3
+  if ($cmp == 0) {                # N = 0
+    return GMP->new(2);
+  } elsif ($cmp < 0) {            # N < 0
+    return undef;
+  } else {
+    if (Rmpz_odd_p($n)) {         # if N is odd
+      Rmpz_sub_ui($n, $n, 2);     # N = N - 2
+    } else {
+      Rmpz_sub_ui($n, $n, 1);     # N = N - 1
+    }
+    # N is now the previous odd number
+    while (1) {
+      return $n if is_prime($n);  # check primality of that number, return if prime
+      Rmpz_sub_ui($n, $n, 2);     # N = N - 2
+    } 
   }
 }
 
