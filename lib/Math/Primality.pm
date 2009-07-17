@@ -6,61 +6,61 @@ use Math::GMPz qw/:mpz/;
 use base 'Exporter';
 use Carp qw/croak/;
 my %small_primes = (
-    2   => 1,
-    3   => 1,
-    5   => 1,
-    7   => 1,
-    11  => 1,
-    13  => 1,
-    17  => 1,
-    19  => 1,
-    23  => 1,
-    29  => 1,
-    31  => 1,
-    37  => 1,
-    41  => 1,
-    43  => 1,
-    47  => 1,
-    53  => 1,
-    59  => 1,
-    61  => 1,
-    67  => 1,
-    71  => 1,
-    73  => 1,
-    79  => 1,
-    83  => 1,
-    89  => 1,
-    97  => 1,
-    101 => 1,
-    103 => 1,
-    107 => 1,
-    109 => 1,
-    113 => 1,
-    127 => 1,
-    131 => 1,
-    137 => 1,
-    139 => 1,
-    149 => 1,
-    151 => 1,
-    157 => 1,
-    163 => 1,
-    167 => 1,
-    173 => 1,
-    179 => 1,
-    181 => 1,
-    191 => 1,
-    193 => 1,
-    197 => 1,
-    199 => 1,
-    211 => 1,
-    223 => 1,
-    227 => 1,
-    229 => 1,
-    233 => 1,
-    239 => 1,
-    241 => 1,
-    251 => 1,
-    257 => 1,
+    2   => 2,
+    3   => 2,
+    5   => 2,
+    7   => 2,
+    11  => 2,
+    13  => 2,
+    17  => 2,
+    19  => 2,
+    23  => 2,
+    29  => 2,
+    31  => 2,
+    37  => 2,
+    41  => 2,
+    43  => 2,
+    47  => 2,
+    53  => 2,
+    59  => 2,
+    61  => 2,
+    67  => 2,
+    71  => 2,
+    73  => 2,
+    79  => 2,
+    83  => 2,
+    89  => 2,
+    97  => 2,
+    101 => 2,
+    103 => 2,
+    107 => 2,
+    109 => 2,
+    113 => 2,
+    127 => 2,
+    131 => 2,
+    137 => 2,
+    139 => 2,
+    149 => 2,
+    151 => 2,
+    157 => 2,
+    163 => 2,
+    167 => 2,
+    173 => 2,
+    179 => 2,
+    181 => 2,
+    191 => 2,
+    193 => 2,
+    197 => 2,
+    199 => 2,
+    211 => 2,
+    223 => 2,
+    227 => 2,
+    229 => 2,
+    233 => 2,
+    239 => 2,
+    241 => 2,
+    251 => 2,
+    257 => 2,
 );
 
 our $DEBUG = 0;
@@ -199,7 +199,7 @@ A strong pseudoprime to $base is an odd number $n with ($n - 1) = $d * 2^$s that
 
 =head3 Notes
 
-$s and $d are calculated with the helper function _find_s_d() and the second condition is checked by sucessive squaring $base^$d and reducing that mod $n.
+The second condition is checked by sucessive squaring $base^$d and reducing that mod $n.
 
 =cut
 
@@ -307,8 +307,6 @@ Then a strong Lucas-Selfridge pseudoprime is an odd, non-perfect square number $
 =head3 Notes
 
 ($d/$n) refers to the Legendre symbol.
-The tuple ($D, $P, $Q) is determined by the helper function _find_dpq_selfridge(). 
-$d and $s are determined by the helper function _find_s_d().
 
 =cut
 
@@ -503,12 +501,12 @@ sub is_prime($) {
     } elsif ( $n < 9_080_191 ) {
         return 0 unless is_strong_pseudoprime($n,31);
         return 0 unless is_strong_pseudoprime($n,73);
-        return 1;
+        return 2;
     } elsif ( $n < 4_759_123_141 ) {
         return 0 unless is_strong_pseudoprime($n,2);
         return 0 unless is_strong_pseudoprime($n,7);
         return 0 unless is_strong_pseudoprime($n,61);
-        return 1;
+        return 2;
     }
     # the lucas test is stronger so do it first
     return is_strong_lucas_pseudoprime($n) && is_strong_pseudoprime($n,2);
@@ -604,9 +602,10 @@ sub prime_count($) {
 }
 
 
-=head1 AUTHOR
+=head1 AUTHORS
 
 Jonathan Leto, C<< <jonathan at leto.net> >>
+Bob Kuo, C<< <bobjkuo at gmail.com> >>
 
 =head1 BUGS
 
