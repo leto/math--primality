@@ -1,18 +1,19 @@
-#!/usr/bin/perl5.10 -w
+#!/usr/bin/perl -w
 
 use strict;
-use 5.010;
-use Math::GSL::RNG;
+#use Math::GSL::RNG;
 use Math::Pari qw/isprime/;
 use Math::Primality qw/is_prime/;
 use Data::Dumper;
 use Benchmark qw/:all/;
 my $count = shift || 5000;
 
-my $rng = Math::GSL::RNG->new;
-my @small_nums = map { $_ % 1000 } $rng->get(100);
+#my $rng = Math::GSL::RNG->new;
+#my @small_nums = map { $_ % 1000 } $rng->get(100);
 
-say "Benchmarking Math::Primality version $Math::Primality::VERSION";
+my @small_nums = map { $_ + int(rand) } (1..100);
+
+print "Benchmarking Math::Primality version $Math::Primality::VERSION\n";
 
 cmpthese($count,{
     'is_prime' => sub { is_prime($_) for @small_nums },
