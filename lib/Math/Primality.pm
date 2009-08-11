@@ -480,18 +480,20 @@ Returns true if number is prime, false if number is composite.
 
 is_prime() is implemented using the BPSW algorithim which is a combination of two probable-prime 
 algorithims, the strong Miller-Rabin test and the strong Lucas-Selfridge test.  While no
-psuedoprime has been found for N < 10^15, this does not mean there is not a pseudoprime.
+psuedoprime has been found for N < 10^15, this does not mean there is not a pseudoprime. A 
+possible improvement would be to instead implement the AKS test which runs in quadratic time and 
+is deterministic with no false-positives.
 
 =head3 Notes
 
 The strong Miller-Rabin test is implemented by is_strong_pseudoprime(). The strong Lucas-Selfridge test is implemented
 by is_strong_lucas_pseudoprime().
 
-=cut
+We have implemented some optimizations.  We have an array of small primes to check all $n <= 257. According to 
+L<http://primes.utm.edu/prove/prove2_3.html> if $n < 9,080,191 is a both a base-31 and a base-73 strong pseudoprime,
+ then $n is prime. If $n < 4,759,123,141 is a base-2, base-7 and base-61 strong pseudoprime, then $n is prime.
 
-# If n < 9,080,191 is a both 31 and 73-SPRP, then n is prime.
-# If n < 4,759,123,141 is a 2, 7 and 61-SPRP, then n is prime.
-# http://primes.utm.edu/prove/prove2_3.html
+=cut
 
 sub is_prime($) {
     my $n = shift;
@@ -585,8 +587,21 @@ sub prev_prime($) {
 
 =head2 prime_count($n)
 
-Returns the count of the number of primes less than or equal to $n. This is the
-prime counting function.
+Returns the number of primes less than or equal to $n.
+
+    my $count = prime_count(1000);          # $count = 168
+    my $bigger_count = prime_count(10000);  # $bigger_count = 1229
+
+=head3 Details
+
+This is implemented with a simple for loop.  The Meissel, Lehmer, Lagarias, Miller,
+Odlyzko method is considerably faster.  A paper can be found at 
+L<http://www.ams.org/mcom/1996-65-213/S0025-5718-96-00674-6/S0025-5718-96-00674-6.pdf>
+that describes this method in rigorous detail.
+
+=head3 Notes
+
+Checking of primality is implemented by is_prime()
 
 =cut
 
@@ -623,6 +638,8 @@ bpsw1.zip by Thomas R. Nicely, available at http://www.trnicely.net/misc/bpsw.ht
 or in the spec/bpsw directory of the Math::Primality source code. Without his
 research this module would not exist.
 
+The Math::GMPz module that interfaces with the GMP C-library was written and is 
+maintained by Sysiphus.  Without his work, our work would be impossible.
 
 =head1 SUPPORT
 
