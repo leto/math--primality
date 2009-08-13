@@ -149,10 +149,10 @@ sub is_pseudoprime($;$)
     # if $n and $base are not coprime, than $base is a factor of $n
     # $base > 2 && ( Math::BigInt::bgcd($n,$base) != 1 ) && return 0;
 
-    my $m    = _copy($n);
+    my $m    = GMP->new();
     Rmpz_sub_ui($m, $n, 1);              # m = n - 1
 
-    my $mod = _copy($base);
+    my $mod = GMP->new();
     Rmpz_powm($mod, $base, $m, $n );
     return ! Rmpz_cmp_ui($mod, 1);       # pseudoprime if $mod = 1
 }
@@ -220,8 +220,8 @@ sub is_strong_pseudoprime($;$)
     my $cmp = _check_two_and_even($n);
     return $cmp if $cmp != 2;
 
-    my $m   = _copy($n);
-    Rmpz_sub_ui($m,$m,1);
+    my $m   = GMP->new();
+    Rmpz_sub_ui($m,$n,1);
 
     my ($s,$d) = _find_s_d($m);
     debug "m=$m, s=$s, d=$d" if DEBUG;
@@ -248,8 +248,8 @@ sub is_strong_pseudoprime($;$)
         Rmpz_mul($residue,$residue,$residue);
         debug "$_: r=$residue" if DEBUG;
 
-        my $mod = _copy($residue);
-        Rmpz_mod($mod, $mod,$n);
+        my $mod = GMP->new();
+        Rmpz_mod($mod, $residue, $n);
         debug "$_:$residue % $n = $mod " if DEBUG;
         $mod = Rmpz_cmp($mod, $m);
 
@@ -330,8 +330,8 @@ sub is_strong_lucas_pseudoprime($)
     if ($D == 0) {  #_find_dpq_selfridge found a factor of N
       return 0;
     }
-    my $m = _copy($n);
-    Rmpz_add_ui($m, $m, 1);
+    my $m = GMP->new();
+    Rmpz_add_ui($m, $n, 1);
 
     # determine s and d such that m = d * 2^s + 1
     my ($s,$d) = _find_s_d($m);
@@ -424,7 +424,7 @@ sub is_strong_lucas_pseudoprime($)
 sub _find_dpq_selfridge($) {
   my $n = GMP->new($_[0]);
   my ($d,$sign,$wd) = (5,1,0);
-  my $gcd = Math::GMPz->new;
+  my $gcd = GMP->new;
 
   # determine D
   while (1) {
