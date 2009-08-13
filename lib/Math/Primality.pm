@@ -265,7 +265,7 @@ sub is_strong_pseudoprime($;$)
 # given an odd number N find (s, d) such that N = d * 2^s + 1
 sub _find_s_d($)
 {
-    my $m   = GMP->new($_[0]);
+    my $m   = $_[0];
     my $s   = Rmpz_scan1($m,1);
     my $d   = GMP->new(0);
     Rmpz_tdiv_q_2exp($d,$m,$s);
@@ -422,7 +422,7 @@ sub is_strong_lucas_pseudoprime($)
 
 # selfridge's method for finding the tuple (D,P,Q) for is_strong_lucas_pseudoprime
 sub _find_dpq_selfridge($) {
-  my $n = GMP->new($_[0]);
+  my $n = $_[0];
   my ($d,$sign,$wd) = (5,1,0);
   my $gcd = GMP->new;
 
