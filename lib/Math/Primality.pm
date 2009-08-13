@@ -63,7 +63,9 @@ my %small_primes = (
     257 => 2,
 );
 
-our $DEBUG = 0;
+use constant
+	DEBUG => 0
+;
 
 use constant GMP => 'Math::GMPz';
 
@@ -147,8 +149,8 @@ sub is_pseudoprime($;$)
     # if $n and $base are not coprime, than $base is a factor of $n
     # $base > 2 && ( Math::BigInt::bgcd($n,$base) != 1 ) && return 0;
 
-    my $m   = _copy($n);
-    Rmpz_sub_ui($m, $m, 1);              # m = n - 1
+    my $m    = _copy($n);
+    Rmpz_sub_ui($m, $n, 1);              # m = n - 1
 
     my $mod = _copy($base);
     Rmpz_powm($mod, $base, $m, $n );
@@ -163,7 +165,9 @@ sub is_small_prime
 }
 
 sub debug {
-    warn $_[0] if $ENV{DEBUG} or $DEBUG;
+    if ( DEBUG ) {
+      warn $_[0];
+    }
 }
 
 sub _copy($)
@@ -220,21 +224,21 @@ sub is_strong_pseudoprime($;$)
     Rmpz_sub_ui($m,$m,1);
 
     my ($s,$d) = _find_s_d($m);
-    debug "m=$m, s=$s, d=$d";
+    debug "m=$m, s=$s, d=$d" if DEBUG;
 
     my $residue = GMP->new(0);
     Rmpz_powm($residue, $base,$d, $n);
-    debug "$base^$d % $n = $residue";
+    debug "$base^$d % $n = $residue" if DEBUG;
 
     # if $base^$d = +-1 (mod $n) , $n is a strong pseudoprime
 
     if ( Rmpz_cmp_ui( $residue,1) == 0 ) {
-        debug "found $n as spsp since $base^$d % $n == $residue == 1\n";
+        debug "found $n as spsp since $base^$d % $n == $residue == 1\n" if DEBUG;
         return 1;
     }
 
     if ( Rmpz_cmp($residue,$m) == 0 ) {
-        debug "found $n as spsp since $base^$d % $n == $residue == $m\n";
+        debug "found $n as spsp since $base^$d % $n == $residue == $m\n" if DEBUG;
         return 1;
     }
 
@@ -242,15 +246,15 @@ sub is_strong_pseudoprime($;$)
         # successively square $residue, $n is a strong psuedoprime
         # if any of these are congruent to -1 (mod $n)
         Rmpz_mul($residue,$residue,$residue);
-        debug "$_: r=$residue";
+        debug "$_: r=$residue" if DEBUG;
 
         my $mod = _copy($residue);
         Rmpz_mod($mod, $mod,$n);
-        debug "$_:$residue % $n = $mod ";
+        debug "$_:$residue % $n = $mod " if DEBUG;
         $mod = Rmpz_cmp($mod, $m);
 
         if ($mod == 0) {
-            debug "$_:$mod == $m => spsp!";
+            debug "$_:$mod == $m => spsp!" if DEBUG;
             return 1;
         }
     } ( 1 .. $s-1 );
@@ -428,12 +432,12 @@ sub _find_dpq_selfridge($) {
 
     Rmpz_gcd_ui($gcd, $n, abs $wd);
     if ($gcd > 1 && Rmpz_cmp($n, $gcd) > 0) {
-      debug "1 < $gcd < $n => $n is composite with factor $wd";
+      debug "1 < $gcd < $n => $n is composite with factor $wd" if DEBUG;
       return 0;
     }
     my $j = Rmpz_jacobi(GMP->new($wd), $n);
     if ($j == -1) {
-      debug "Rmpz_jacobi($wd, $n) == -1 => found D";
+      debug "Rmpz_jacobi($wd, $n) == -1 => found D" if DEBUG;
       last; 
     }
     # didn't find D, increment and swap sign
@@ -450,7 +454,7 @@ sub _find_dpq_selfridge($) {
       # Q = (1 - D) / 4
       $q = (1 - $wd) / 4;
   }
-  debug "found P and Q: ($p, $q)";
+  debug "found P and Q: ($p, $q)" if DEBUG;
   return ($wd, $p, $q);
 }
 
