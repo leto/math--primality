@@ -463,10 +463,10 @@ sub _find_dpq_selfridge($) {
 sub _check_two_and_even($) {
   my $n = $_[0];
 
+  return 0 if Rmpz_even_p($n);
   my $cmp = Rmpz_cmp_ui($n, 2);
   return 1 if $cmp == 0;
   return 0 if $cmp < 0;
-  return 0 if Rmpz_even_p($n);
   return 2;
 }
 
@@ -569,9 +569,9 @@ Checking of primality is implemented by is_prime()
 sub prev_prime($) {
   my $n = GMP->new($_[0]);
   my $cmp = Rmpz_cmp_ui($n, 3);   # compare N with 3
-  if ($cmp == 0) {                # N = 0
+  if ($cmp == 0) {                # N = 3
     return GMP->new(2);
-  } elsif ($cmp < 0) {            # N < 0
+  } elsif ($cmp < 0) {            # N < 3
     return undef;
   } else {
     if (Rmpz_odd_p($n)) {         # if N is odd
