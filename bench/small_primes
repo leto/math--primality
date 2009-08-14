@@ -11,7 +11,7 @@ my $count = shift || 5000;
 #my $rng = Math::GSL::RNG->new;
 #my @small_nums = map { $_ % 1000 } $rng->get(100);
 
-my @small_nums = map { $_ + int(rand) } (1..100);
+my @small_nums = map { int(rand() * 1000000) } (1..100);
 
 print "Benchmarking Math::Primality version $Math::Primality::VERSION\n";
 
