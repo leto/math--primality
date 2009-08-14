@@ -461,9 +461,9 @@ sub _find_dpq_selfridge($) {
 # method returns 0 if N < two or even, returns 1 if N == 2
 # returns 2 if N > 2 and odd
 sub _check_two_and_even($) {
-  my $n = GMP->new($_[0]);
+  my $n = $_[0];
 
-  my $cmp = Rmpz_cmp_ui($n, 2 );
+  my $cmp = Rmpz_cmp_ui($n, 2);
   return 1 if $cmp == 0;
   return 0 if $cmp < 0;
   return 0 if Rmpz_even_p($n);
