@@ -512,8 +512,8 @@ sub is_prime($) {
         return 0 unless is_strong_pseudoprime($n,61);
         return 2;
     }
-    # the lucas test is stronger so do it first
-    return is_strong_lucas_pseudoprime($n) && is_strong_pseudoprime($n,2);
+    # the strong_pseudoprime test is quicker, do it first
+    return is_strong_pseudoprime($n,2) && is_strong_lucas_pseudoprime($n);
 }
 
 =head2 next_prime($x)
