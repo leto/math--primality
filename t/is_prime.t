@@ -8,10 +8,6 @@ use Math::Primality qw/is_prime/;
 use Math::GMPz qw/:mpz/;
 use Data::Dumper;
 
-### test small numbers (<1000) ###
-### test Lucas psuedoprimes ###
-### basic method handling ###
-
 my $z = Math::GMPz->new(3);
 ok( is_prime($z), "is_prime should handle Math::GMPz objects, three is prime" );
 ok( is_prime(2), '2 is prime');
@@ -80,10 +76,6 @@ map { ok(!is_prime($_), "Pseudoprime (base 2) $_ is not prime" ) } qw/
  4681 5461 6601 7957 8321
 /;
 
-{
-    local $TODO = 'fix this';
-    throws_ok( sub { is_prime('foo') },
+throws_ok( sub { is_prime('foo') },
         qr/First argument supplied to Rmpz_init_set_str/,
         'is_prime warns about string not being valid');
-}
-
