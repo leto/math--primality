@@ -1,6 +1,6 @@
 ---
 name: Math-Primality
-version: 0.03_02
+version: 0.03_03
 author:
   - 'Jonathan Leto <jonathan@leto.net>'
 abstract: Advanced Primality Algorithms using GMP
@@ -17,7 +17,7 @@ configure_requires:
 provides:
   Math::Primality:
     file: lib/Math/Primality.pm
-    version: 0.03_02
+    version: 0.03_03
 generated_by: Module::Build version 0.34
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html

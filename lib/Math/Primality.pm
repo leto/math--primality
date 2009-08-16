@@ -75,11 +75,11 @@ Math::Primality - Advanced Primality Algorithms using GMP
 
 =head1 VERSION
 
-Version 0.03_02
+Version 0.03_03
 
 =cut
 
-our $VERSION = '0.03_02';
+our $VERSION = '0.03_03';
 $VERSION = eval $VERSION;
 
 
