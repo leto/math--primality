@@ -463,10 +463,10 @@ sub _find_dpq_selfridge($) {
 sub _check_two_and_even($) {
   my $n = $_[0];
 
-  return 0 if Rmpz_even_p($n);
   my $cmp = Rmpz_cmp_ui($n, 2);
   return 1 if $cmp == 0;
   return 0 if $cmp < 0;
+  return 0 if Rmpz_even_p($n);
   return 2;
 }
 
