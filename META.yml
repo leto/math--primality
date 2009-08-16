@@ -6,17 +6,19 @@ author:
 abstract: Advanced Primality Algorithms using GMP
 license: perl
 resources:
-  license: ~
-requires:
-  Math::GMPz: 0.26
+  license: http://dev.perl.org/licenses/
 build_requires:
   Test::Exception: 0
   Test::More: 0
+requires:
+  Math::GMPz: 0.26
+configure_requires:
+  Module::Build: 0.34
 provides:
   Math::Primality:
     file: lib/Math/Primality.pm
     version: 0.03_02
-generated_by: Module::Build version 0.32
+generated_by: Module::Build version 0.34
 meta-spec:
-  url: http://module-build.sourceforge.net/META-spec-v1.2.html
-  version: 1.2
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: 1.4
