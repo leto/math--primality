@@ -63,7 +63,9 @@ my %small_primes = (
     257 => 2,
 );
 
-our $DEBUG = 0;
+use constant
+	DEBUG => 0
+;
 
 use constant GMP => 'Math::GMPz';
 
@@ -147,10 +149,10 @@ sub is_pseudoprime($;$)
     # if $n and $base are not coprime, than $base is a factor of $n
     # $base > 2 && ( Math::BigInt::bgcd($n,$base) != 1 ) && return 0;
 
-    my $m   = _copy($n);
-    Rmpz_sub_ui($m, $m, 1);              # m = n - 1
+    my $m    = GMP->new();
+    Rmpz_sub_ui($m, $n, 1);              # m = n - 1
 
-    my $mod = _copy($base);
+    my $mod = GMP->new();
     Rmpz_powm($mod, $base, $m, $n );
     return ! Rmpz_cmp_ui($mod, 1);       # pseudoprime if $mod = 1
 }
@@ -163,7 +165,9 @@ sub is_small_prime
 }
 
 sub debug {
-    warn $_[0] if $ENV{DEBUG} or $DEBUG;
+    if ( DEBUG ) {
+      warn $_[0];
+    }
 }
 
 sub _copy($)
@@ -216,25 +220,25 @@ sub is_strong_pseudoprime($;$)
     my $cmp = _check_two_and_even($n);
     return $cmp if $cmp != 2;
 
-    my $m   = _copy($n);
-    Rmpz_sub_ui($m,$m,1);
+    my $m   = GMP->new();
+    Rmpz_sub_ui($m,$n,1);
 
     my ($s,$d) = _find_s_d($m);
-    debug "m=$m, s=$s, d=$d";
+    debug "m=$m, s=$s, d=$d" if DEBUG;
 
     my $residue = GMP->new(0);
     Rmpz_powm($residue, $base,$d, $n);
-    debug "$base^$d % $n = $residue";
+    debug "$base^$d % $n = $residue" if DEBUG;
 
     # if $base^$d = +-1 (mod $n) , $n is a strong pseudoprime
 
     if ( Rmpz_cmp_ui( $residue,1) == 0 ) {
-        debug "found $n as spsp since $base^$d % $n == $residue == 1\n";
+        debug "found $n as spsp since $base^$d % $n == $residue == 1\n" if DEBUG;
         return 1;
     }
 
     if ( Rmpz_cmp($residue,$m) == 0 ) {
-        debug "found $n as spsp since $base^$d % $n == $residue == $m\n";
+        debug "found $n as spsp since $base^$d % $n == $residue == $m\n" if DEBUG;
         return 1;
     }
 
@@ -242,15 +246,15 @@ sub is_strong_pseudoprime($;$)
         # successively square $residue, $n is a strong psuedoprime
         # if any of these are congruent to -1 (mod $n)
         Rmpz_mul($residue,$residue,$residue);
-        debug "$_: r=$residue";
+        debug "$_: r=$residue" if DEBUG;
 
-        my $mod = _copy($residue);
-        Rmpz_mod($mod, $mod,$n);
-        debug "$_:$residue % $n = $mod ";
+        my $mod = GMP->new();
+        Rmpz_mod($mod, $residue, $n);
+        debug "$_:$residue % $n = $mod " if DEBUG;
         $mod = Rmpz_cmp($mod, $m);
 
         if ($mod == 0) {
-            debug "$_:$mod == $m => spsp!";
+            debug "$_:$mod == $m => spsp!" if DEBUG;
             return 1;
         }
     } ( 1 .. $s-1 );
@@ -261,7 +265,7 @@ sub is_strong_pseudoprime($;$)
 # given an odd number N find (s, d) such that N = d * 2^s + 1
 sub _find_s_d($)
 {
-    my $m   = GMP->new($_[0]);
+    my $m   = $_[0];
     my $s   = Rmpz_scan1($m,1);
     my $d   = GMP->new(0);
     Rmpz_tdiv_q_2exp($d,$m,$s);
@@ -326,8 +330,8 @@ sub is_strong_lucas_pseudoprime($)
     if ($D == 0) {  #_find_dpq_selfridge found a factor of N
       return 0;
     }
-    my $m = _copy($n);
-    Rmpz_add_ui($m, $m, 1);
+    my $m = GMP->new();
+    Rmpz_add_ui($m, $n, 1);
 
     # determine s and d such that m = d * 2^s + 1
     my ($s,$d) = _find_s_d($m);
@@ -418,9 +422,9 @@ sub is_strong_lucas_pseudoprime($)
 
 # selfridge's method for finding the tuple (D,P,Q) for is_strong_lucas_pseudoprime
 sub _find_dpq_selfridge($) {
-  my $n = GMP->new($_[0]);
+  my $n = $_[0];
   my ($d,$sign,$wd) = (5,1,0);
-  my $gcd = Math::GMPz->new;
+  my $gcd = GMP->new;
 
   # determine D
   while (1) {
@@ -428,12 +432,12 @@ sub _find_dpq_selfridge($) {
 
     Rmpz_gcd_ui($gcd, $n, abs $wd);
     if ($gcd > 1 && Rmpz_cmp($n, $gcd) > 0) {
-      debug "1 < $gcd < $n => $n is composite with factor $wd";
+      debug "1 < $gcd < $n => $n is composite with factor $wd" if DEBUG;
       return 0;
     }
     my $j = Rmpz_jacobi(GMP->new($wd), $n);
     if ($j == -1) {
-      debug "Rmpz_jacobi($wd, $n) == -1 => found D";
+      debug "Rmpz_jacobi($wd, $n) == -1 => found D" if DEBUG;
       last; 
     }
     # didn't find D, increment and swap sign
@@ -450,16 +454,16 @@ sub _find_dpq_selfridge($) {
       # Q = (1 - D) / 4
       $q = (1 - $wd) / 4;
   }
-  debug "found P and Q: ($p, $q)";
+  debug "found P and Q: ($p, $q)" if DEBUG;
   return ($wd, $p, $q);
 }
 
 # method returns 0 if N < two or even, returns 1 if N == 2
 # returns 2 if N > 2 and odd
 sub _check_two_and_even($) {
-  my $n = GMP->new($_[0]);
+  my $n = $_[0];
 
-  my $cmp = Rmpz_cmp_ui($n, 2 );
+  my $cmp = Rmpz_cmp_ui($n, 2);
   return 1 if $cmp == 0;
   return 0 if $cmp < 0;
   return 0 if Rmpz_even_p($n);
@@ -510,8 +514,8 @@ sub is_prime($) {
         return 0 unless is_strong_pseudoprime($n,61);
         return 2;
     }
-    # the lucas test is stronger so do it first
-    return is_strong_lucas_pseudoprime($n) && is_strong_pseudoprime($n,2);
+    # the strong_pseudoprime test is quicker, do it first
+    return is_strong_pseudoprime($n,2) && is_strong_lucas_pseudoprime($n);
 }
 
 =head2 next_prime($x)
@@ -567,9 +571,9 @@ Checking of primality is implemented by is_prime()
 sub prev_prime($) {
   my $n = GMP->new($_[0]);
   my $cmp = Rmpz_cmp_ui($n, 3);   # compare N with 3
-  if ($cmp == 0) {                # N = 0
+  if ($cmp == 0) {                # N = 3
     return GMP->new(2);
-  } elsif ($cmp < 0) {            # N < 0
+  } elsif ($cmp < 0) {            # N < 3
     return undef;
   } else {
     if (Rmpz_odd_p($n)) {         # if N is odd
