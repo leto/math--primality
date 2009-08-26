@@ -1,4 +1,5 @@
 bench/small_primes
+bench/test_large_primes
 bin/primes.pl
 bin/strong_psuedoprimes.pl
 Build.PL
@@ -13,7 +14,6 @@ MANIFEST.SKIP
 META.yml
 README
 ROADMAP
-spec/bpsw/bpsw
 spec/bpsw/bpsw1.c
 spec/bpsw/trn.c
 spec/bpsw/trn.h
