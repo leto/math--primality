@@ -1,24 +1,22 @@
 ---
 name: Math-Primality
-version: 0.03_03
+version: 0.04
 author:
   - 'Jonathan Leto <jonathan@leto.net>'
 abstract: Advanced Primality Algorithms using GMP
 license: perl
 resources:
-  license: http://dev.perl.org/licenses/
+  license: ~
+requires:
+  Math::GMPz: 0.26
 build_requires:
   Test::Exception: 0
   Test::More: 0
-requires:
-  Math::GMPz: 0.26
-configure_requires:
-  Module::Build: 0.34
 provides:
   Math::Primality:
     file: lib/Math/Primality.pm
-    version: 0.03_03
-generated_by: Module::Build version 0.34
+    version: 0.04
+generated_by: Module::Build version 0.32
 meta-spec:
-  url: http://module-build.sourceforge.net/META-spec-v1.4.html
-  version: 1.4
+  url: http://module-build.sourceforge.net/META-spec-v1.2.html
+  version: 1.2
