@@ -7,6 +7,7 @@ abstract: Advanced Primality Algorithms using GMP
 license: perl
 resources:
   license: ~
+  repository: http://github.com/leto/math--primality/tree/master
 requires:
   Math::GMPz: 0.26
 build_requires:

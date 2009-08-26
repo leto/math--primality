@@ -10,14 +10,19 @@ my $builder = Module::Build->new(
     dist_version_from   => 'lib/Math/Primality.pm',
     include_dirs        => '',
     build_requires => {
-        'Test::More' => 0,
+        'Test::More'      => 0,
         'Test::Exception' => 0,
     },
     requires => {
-        'Math::GMPz' => 0.26,
+        'Math::GMPz'      => 0.26,
     },
     add_to_cleanup      => [ 'Math-Primality-*' ],
     create_makefile_pl  => 'traditional',
+    meta_merge     => {
+        resources => {
+            repository  => 'http://github.com/leto/math--primality/tree/master'
+        },
+    },
 );
 
 $builder->create_build_script();
