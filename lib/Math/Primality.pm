@@ -617,6 +617,21 @@ sub prime_count($) {
 }
 
 
+
+sub aks($) {
+  # http://ece.gmu.edu/courses/ECE746/project/F06_Project_resources/Salembier_Southerington_AKS.pdf
+  # http://fatphil.org/maths/AKS/
+  my $n = GMP->new($_[0]);
+  # Step 1 - check if $n = m^d for some m, d
+  # if $n is a power then return 0
+  if (Rmpz_perfect_power_p($n) return 0;
+  # Step 2 - find smallest $r > (log ($n))^2 such that (x + a) ^ $n = x^$n + a (mod x^$r - 1, n)
+  # Step 3 - if gcd($a, $n) != 1 for all $a <= $r then return 0
+  # Step 4 - for $a = 1 to floor (sqrt($r)*log($n)) do
+    # if ( (x + a) ^ $n = x^$n + a (mod x^$r - 1, $n)) then return 2
+  return 2;
+}
+
 =head1 AUTHORS
 
 Jonathan Leto, C<< <jonathan at leto.net> >>
