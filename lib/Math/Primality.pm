@@ -620,43 +620,76 @@ sub prime_count($) {
 
 sub aks($) {
   # http://ece.gmu.edu/courses/ECE746/project/F06_Project_resources/Salembier_Southerington_AKS.pdf
+  # http://islab.oregonstate.edu/koc/ece575/04Project2/Halim-Chanleudfa/Report.pdf
   # http://fatphil.org/maths/AKS/
   my $n = GMP->new($_[0]);
   # Step 1 - check if $n = m^d for some m, d
   # if $n is a power then return 0
   if (Rmpz_perfect_power_p($n)) {
-    return 0;
+    debug "fails step 1 of aks - $n is a perfect power" if DEBUG;
+    return 0;  # composite
   }
   # Step 2 - find smallest $r > (log ($n))^2 such that (x + a) ^ $n = x^$n + a (mod x^$r - 1, n)
   my $r = _find_smallest_r($n);
-  # Step 3 - if gcd($a, $n) != 1 for all $a <= $r then return 0
+  # Step 3 - if gcd($a, $n) != 1 for all 1<= $a <= $r then return 0
+  for (my $a = GMP->new(1); Rmpz_cmp($a, $r) <= 0; Rmpz_add_ui($a, $a, 1)) {
+    my $gcd_rslt = GMP->new();
+    Rmpz_gcd($gcd_rslt, $a, $n);  # $gcd_rslt = gcd($a, $n)
+    if (Rmpz_cmp_ui($gcd_rslt, 1) > 0 && Rmpz_cmp($gcd_rslt, $n) < 0) {  # if $gcd_rslt > 1 && $gcd_rslt < $n
+      debug "fails step 3 of aks - $gcd_rslt is a factor of $n" if DEBUG;
+      return 0; # composite
+    } 
+  }
   # Step 4 - if $n <= $r then return 0
+  if (Rmpz_cmp($n, $r) <= 0) {
+    debug "step 4 of aks - $n is prime" if DEBUG;
+    return 2; # prime
+  }
   # Step 5 - for $a = 1 to floor (2*sqrt(totient($r))*log($n)) do
     # if ( (x + a) ^ $n = x^$n + a (mod x^$r - 1, $n)) then return 2
+  # compute $max_a = 2 * sqrt(totient($r)) * log($n)
+  # since $r is prime, totient($r) is just $r - 1
+  my $totient_r = GMP->new();
+  Rmpz_sub_ui($totient_r, $r, 1);  # $totient_r = $r - 1
+  # compute ceil(log ($n))
+  my $logn = _Rmpz_logbase2cl($n); # $logn = ceil(log ($n))
+  # compute sqrt(totient($r))
+  my $sqrt = GMP->new();
+  Rmpz_sqrt($sqrt, $totient_r);    # $sqrt = sqrt($totient_r)
+  # compute 2 * sqrt(totient($r))
+  my $sqrt2 = GMP->new(); 
+  Rmpz_mul_ui($sqrt2, $sqrt, 2);   # sqrt2 = $sqrt * 2
+  # compute 2 * sqrt(totient_($r)) * log ($n)
+  my $max_a = GMP->new();
+  Rmpz_mul($max_a, $sqrt2, $logn);
+  debug "max_a is $max_a" if DEBUG;
+    # if ( (x + a) ^ $n = x^$n + a (mod x^$r - 1, $n)) then return 2
   # Step 6 - return 2
-  return 2;
+  return 2; # prime
 }
 
 sub _find_smallest_r($) {
   # try out successive values of $r and test if $n^$k != 1 mod $r for every $k <= 4(log n)^2
   my $n = $_[0];
   # find $max_k
-  my $logn = GMP->new(_Rmpz_logbase2cl($n));
+  my $logn = GMP->new(_Rmpz_logbase2cl($n)); # $logn = log $n (base 2)
   my $logn_sqrd = GMP->new();
-  Rmpz_mul($logn_sqrd, $logn, $logn);
+  Rmpz_mul($logn_sqrd, $logn, $logn);        # $logn_sqrd = $logn * $logn
   my $max_k = GMP->new();
-  Rmpz_mul_si($max_k, $logn_sqrd, 4);
+  Rmpz_mul_si($max_k, $logn_sqrd, 4);        # $max_k = 4 * $logn_sqrd
+  debug "max_k is $max_k" if DEBUG;
   my $r = GMP->new(2);
   while (1) {
     if (_r_good($r, $max_k, $n)) {
       last;
     }
-    Rmpz_add_ui($r, $r, 1);
+    Rmpz_add_ui($r, $r, 1);                  # $r = $r + 1
   }
+  debug "r is $r" if DEBUG;
   return $r;
 }
 
-# private function
+# private function _r_good ($r, $max_k, $n)
 # return 0 is this $r isn't good for a certain $n, 1 if it is
 sub _r_good($) {
   my $r = $_[0];
@@ -667,17 +700,20 @@ sub _r_good($) {
   my $mod_rslt = GMP->new();
 
   while (Rmpz_cmp($k, $max_k) <= 0) {
-    Rmpz_powm($mod_rslt, $n, $k, $r);
-    if (Rmpz_cmp_ui($mod_rslt, 1) == 0) {
+    Rmpz_powm($mod_rslt, $n, $k, $r);       # $mod_rslt = $n ^ $k mod $r
+    if (Rmpz_cmp_ui($mod_rslt, 1) == 0) {   # if $mod_rslt == 0
       return 0;
     }
-    Rmpz_add_ui($k, $k, 1);
+    Rmpz_add_ui($k, $k, 1);                 # $k = $k + 1
   }
   return 1;
 }
+
+# thanks GMP for not having a log function...
+# this nonsense with the subtracting is for the ceiling (cl) and floor (fl)
 sub _Rmpz_logbase2cl($) {
   my $n = $_[0];
-  my ($double, $si) = Rmpz_get_d_2exp($n);
+  my ($double, $si) = Rmpz_get_d_2exp($n);  # $double * 2^$si ~= $op (with 0.5 <= abs($double) < 1)
   if ($double == 0.5) {
     $si--;
   } 
@@ -686,7 +722,7 @@ sub _Rmpz_logbase2cl($) {
 
 sub _Rmpz_logbase2fl($) {
   my $n = $_[0];
-  my ($double, $si) = Rmpz_get_d_2exp($n);
+  my ($double, $si) = Rmpz_get_d_2exp($n);  # $double * 2^$si ~= $op (with 0.5 <= abs($double) < 1)
   if ($double == 0.5) {
     $si--;
   } else {
