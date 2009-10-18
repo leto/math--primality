@@ -624,12 +624,75 @@ sub aks($) {
   my $n = GMP->new($_[0]);
   # Step 1 - check if $n = m^d for some m, d
   # if $n is a power then return 0
-  if (Rmpz_perfect_power_p($n) return 0;
+  if (Rmpz_perfect_power_p($n)) {
+    return 0;
+  }
   # Step 2 - find smallest $r > (log ($n))^2 such that (x + a) ^ $n = x^$n + a (mod x^$r - 1, n)
+  my $r = _find_smallest_r($n);
   # Step 3 - if gcd($a, $n) != 1 for all $a <= $r then return 0
-  # Step 4 - for $a = 1 to floor (sqrt($r)*log($n)) do
+  # Step 4 - if $n <= $r then return 0
+  # Step 5 - for $a = 1 to floor (2*sqrt(totient($r))*log($n)) do
     # if ( (x + a) ^ $n = x^$n + a (mod x^$r - 1, $n)) then return 2
+  # Step 6 - return 2
   return 2;
+}
+
+sub _find_smallest_r($) {
+  # try out successive values of $r and test if $n^$k != 1 mod $r for every $k <= 4(log n)^2
+  my $n = $_[0];
+  # find $max_k
+  my $logn = GMP->new(_Rmpz_logbase2cl($n));
+  my $logn_sqrd = GMP->new();
+  Rmpz_mul($logn_sqrd, $logn, $logn);
+  my $max_k = GMP->new();
+  Rmpz_mul_si($max_k, $logn_sqrd, 4);
+  my $r = GMP->new(2);
+  while (1) {
+    if (_r_good($r, $max_k, $n)) {
+      last;
+    }
+    Rmpz_add_ui($r, $r, 1);
+  }
+  return $r;
+}
+
+# private function
+# return 0 is this $r isn't good for a certain $n, 1 if it is
+sub _r_good($) {
+  my $r = $_[0];
+  my $max_k = $_[1];
+  my $n = $_[2];
+
+  my $k = GMP->new(1);
+  my $mod_rslt = GMP->new();
+
+  while (Rmpz_cmp($k, $max_k) <= 0) {
+    Rmpz_powm($mod_rslt, $n, $k, $r);
+    if (Rmpz_cmp_ui($mod_rslt, 1) == 0) {
+      return 0;
+    }
+    Rmpz_add_ui($k, $k, 1);
+  }
+  return 1;
+}
+sub _Rmpz_logbase2cl($) {
+  my $n = $_[0];
+  my ($double, $si) = Rmpz_get_d_2exp($n);
+  if ($double == 0.5) {
+    $si--;
+  } 
+  return $si;
+}
+
+sub _Rmpz_logbase2fl($) {
+  my $n = $_[0];
+  my ($double, $si) = Rmpz_get_d_2exp($n);
+  if ($double == 0.5) {
+    $si--;
+  } else {
+    $si++;
+  }
+  return $si;
 }
 
 =head1 AUTHORS
