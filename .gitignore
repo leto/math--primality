@@ -20,3 +20,4 @@ tags
 .DS_Store
 .prove
 xt/*.txt
+check_dist
