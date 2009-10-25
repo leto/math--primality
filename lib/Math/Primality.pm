@@ -663,7 +663,7 @@ sub aks($) {
   my $max_a = GMP->new();
   Rmpz_mul($max_a, $sqrt2, $logn);
   debug "max_a is $max_a" if DEBUG;
-    # if ( (x + a) ^ $n = x^$n + a (mod x^$r - 1, $n)) then return 2
+    # if ( (x + a) ^ $n = x^$n + a (mod x^$r - 1, $n)) then return 0
   # Step 6 - return 2
   return 2; # prime
 }
