@@ -724,9 +724,9 @@ sub _Rmpz_logbase2fl($) {
   my $n = $_[0];
   my ($double, $si) = Rmpz_get_d_2exp($n);  # $double * 2^$si ~= $op (with 0.5 <= abs($double) < 1)
   if ($double == 0.5) {
-    $si--;
-  } else {
     $si++;
+  } else {
+    $si--;
   }
   return $si;
 }

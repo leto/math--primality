@@ -2,7 +2,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 3;
+use Test::More tests => 14;
 
 use Math::Primality;
 use Math::GMPz;
@@ -19,10 +19,16 @@ sub log2 {
   return log($n)/log(2);
 }
 ### check _Rmpz_logbase2cl ###
-$a = ceil(log2(100));
-$b = Math::Primality::_Rmpz_logbase2cl(Math::GMPz->new(100));
-is("$a", "$b", "log2(100) == _Rmpz_logbase2cl(100)");
+for (my $i = 1; $i < 7; $i++) {
+  my $n = $i * 100;
+  my $a = ceil(log2($n));
+  my $b = Math::Primality::_Rmpz_logbase2cl(Math::GMPz->new($n));
+  is("$a", "$b", "log2($n) == _Rmpz_logbase2cl($n)");
+}
 ### check _Rmpz_logbase2fl ###
-$a = floor(log2(100));
-$b = Math::Primality::_Rmpz_logbase2cl(Math::GMPz->new(100));
-is("$a", "$b", "log2(100) == _Rmpz_logbase2cl(100)");
+for (my $i = 1; $i < 7; $i++) {
+  my $n = $i * 100;
+  $a = floor(log2($n));
+  $b = Math::Primality::_Rmpz_logbase2fl(Math::GMPz->new($n));
+  is("$a", "$b", "log2($n) == _Rmpz_logbase2fl($n)");
+}
