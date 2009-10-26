@@ -630,7 +630,7 @@ sub aks($) {
     return 0;  # composite
   }
   # Step 2 - find smallest $r > (log ($n))^2 such that (x + a) ^ $n = x^$n + a (mod x^$r - 1, n)
-  my $r = _find_smallest_r($n);
+  my $r = GMP->new(_find_smallest_r($n));
   # Step 3 - if gcd($a, $n) != 1 for all 1<= $a <= $r then return 0
   for (my $a = GMP->new(1); Rmpz_cmp($a, $r) <= 0; Rmpz_add_ui($a, $a, 1)) {
     my $gcd_rslt = GMP->new();
@@ -646,26 +646,57 @@ sub aks($) {
     return 2; # prime
   }
   # Step 5 - for $a = 1 to floor (2*sqrt(totient($r))*log($n)) do
-    # if ( (x + a) ^ $n = x^$n + a (mod x^$r - 1, $n)) then return 2
+    # if ( (x + a) ^ $n = x^$n + a (mod x^$r - 1, $n)) then return 0
   # compute $max_a = 2 * sqrt(totient($r)) * log($n)
+  my $max_a = GMP->new(_calculate_max_a($r, $n));
+  my $a = GMP->new(1);
+  for (; Rmpz_cmp($a, $max_a) <= 0; Rmpz_add_ui($a, $a, 1)) {
+    # if ( (x + a) ^ $n = x^$n + a (mod x^$r - 1, $n)) then return 0
+    if (!_poly_eq_holds($a, $n, $r)) {
+      debug "Step 5 detected composite" if DEBUG;
+      return 0;
+    }
+  } 
+  # Step 6 - return 2
+  return 2; # prime
+}
+
+sub _calculate_max_a($;$) {
+  my $r = $_[0];
+  my $n = $_[1];
   # since $r is prime, totient($r) is just $r - 1
   my $totient_r = GMP->new();
   Rmpz_sub_ui($totient_r, $r, 1);  # $totient_r = $r - 1
   # compute ceil(log ($n))
-  my $logn = _Rmpz_logbase2cl($n); # $logn = ceil(log ($n))
-  # compute sqrt(totient($r))
-  my $sqrt = GMP->new();
-  Rmpz_sqrt($sqrt, $totient_r);    # $sqrt = sqrt($totient_r)
-  # compute 2 * sqrt(totient($r))
-  my $sqrt2 = GMP->new(); 
-  Rmpz_mul_ui($sqrt2, $sqrt, 2);   # sqrt2 = $sqrt * 2
-  # compute 2 * sqrt(totient_($r)) * log ($n)
+  my $logn = GMP->new(_Rmpz_logbase2cl($n)); # $logn = ceil(log ($n))
+  # compute 2 * ceil(log ($n))
+  my $logn2 = GMP->new(); 
+  Rmpz_mul_ui($logn2, $logn, 2);   # logn2 = $logn * 2
+  # to save us from using floating point, calculate totient_($r) * (2 * log ($n))^2 and then take the sqrt
+  Rmpz_mul($logn2, $logn2, $logn2); 
+  # compute 4 * totient($r) * (log ($n))^2
+  my $squared = GMP->new();
+  Rmpz_mul($squared, $totient_r, $logn2); 
+  # compute 2 * sqrt(totient($r)) * log ($n)
   my $max_a = GMP->new();
-  Rmpz_mul($max_a, $sqrt2, $logn);
+  Rmpz_sqrt($max_a, $squared);
   debug "max_a is $max_a" if DEBUG;
-    # if ( (x + a) ^ $n = x^$n + a (mod x^$r - 1, $n)) then return 0
-  # Step 6 - return 2
-  return 2; # prime
+  return $max_a;
+}
+
+sub _poly_eq_holds($) {
+  my $a = $_[0];
+  my $n = $_[1];
+  my $r = $_[2];
+  # my @r_mod = _sparse_polynomial($r, -1);
+  # my @x_a = [$a, 1];
+  # my @rhs = pow_mod(\@x_a, $n, \@r_mod);
+  # my @x_n = _sparse_polynomial($n, $a);
+  # my @lhs = mod(\@x_n, \@r_mod);
+  # if (nmod(\@lhs, $n) == nmod(\$rhs, $n)) {
+  # do something significant
+  # }
+  return 2;
 }
 
 sub _find_smallest_r($) {
@@ -691,7 +722,7 @@ sub _find_smallest_r($) {
 
 # private function _r_good ($r, $max_k, $n)
 # return 0 is this $r isn't good for a certain $n, 1 if it is
-sub _r_good($) {
+sub _r_good($;$;$) {
   my $r = $_[0];
   my $max_k = $_[1];
   my $n = $_[2];
