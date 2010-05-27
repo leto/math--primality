@@ -25,7 +25,7 @@ Version 0.01
 our $VERSION = '0.01';
 $VERSION = eval $VERSION;
 
-our @EXPORT_OK = qw/aks/;
+our @EXPORT_OK = qw/is_aks_prime/;
 
 our %EXPORT_TAGS = ( all => \@EXPORT_OK );
 
@@ -34,7 +34,7 @@ our %EXPORT_TAGS = ( all => \@EXPORT_OK );
     use Math::Primality::AKS;
 
     my $n = 123;
-    print 'Prime!' if aks($n);
+    print 'Prime!' if is_aks_prime($n);
 
 =head1 DESCRIPTION
 
@@ -52,7 +52,7 @@ sub debug {
     }
 }
 
-sub aks($) {
+sub is_aks_prime($) {
   # http://ece.gmu.edu/courses/ECE746/project/F06_Project_resources/Salembier_Southerington_AKS.pdf
   # http://islab.oregonstate.edu/koc/ece575/04Project2/Halim-Chanleudfa/Report.pdf
   # http://fatphil.org/maths/AKS/
@@ -223,7 +223,7 @@ You can also look for information at:
 
 =head1 COPYRIGHT & LICENSE
 
-Copyright 2009 Bob Kuo, all rights reserved.
+Copyright 2009-2010 Bob Kuo, all rights reserved.
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.
