@@ -79,7 +79,7 @@ Version 0.04
 
 =cut
 
-our $VERSION = '0.04';
+our $VERSION = '0.04_01';
 $VERSION = eval $VERSION;
 
 
