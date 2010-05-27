@@ -616,7 +616,6 @@ sub prime_count($) {
   return $primes;
 }
 
-
 =head1 AUTHORS
 
 Jonathan Leto, C<< <jonathan at leto.net> >>

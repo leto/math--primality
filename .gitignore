@@ -21,3 +21,4 @@ tags
 .prove
 xt/*.txt
 META.yml
+check_dist
