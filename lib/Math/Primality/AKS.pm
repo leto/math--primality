@@ -6,8 +6,6 @@ use Math::GMPz qw/:mpz/;
 use base 'Exporter';
 use Carp qw/croak/;
 
-#use Math::Primality;
-
 use constant DEBUG => 0;
 
 use constant GMP => 'Math::GMPz';
