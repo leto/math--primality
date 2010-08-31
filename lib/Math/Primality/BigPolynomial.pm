@@ -2,7 +2,7 @@ package Math::Primality::BigPolynomial;
 
 use strict;
 use warnings;
-use Math::GMPz;
+use Math::GMPz qw/:mpz/;
 
 sub new {
     my $self              = {};
@@ -12,14 +12,13 @@ sub new {
         if ( ref($construction_junk) eq 'ARRAY' ) {
             $self->{COEF}   = $construction_junk;
             $self->{DEGREE} = scalar(@$construction_junk);
-        }
-        else {
+        } else {
             $self->{DEGREE} = $construction_junk;
             my @a = [];
             for ( my $i = 0 ; $i < $construction_junk ; $i++ ) {
                 push @a, Math::GMPz->new(0);
             }
-            $self->{COEF} = @a;
+            $self->{COEF} = \@a;
         }
     }
     else {
@@ -154,7 +153,7 @@ sub mpz_poly_mod_power {
     my $i = Rmpz_sizeinbase( $power, 2 );
 
   LOOP: for ( ; $i >= 0 ; $i-- ) {
-        Rmpz_poly_mod_mult( $rop, $rop, $rop, $mult_mod, $poly_mod );
+        mpz_poly_mod_mult( $rop, $rop, $rop, $mult_mod, $poly_mod );
 
         if ( Rmpz_tstbit( $power, $i ) ) {
             mpz_poly_mod_mul( $rop, $rop, $x, $mult_mod, $poly_mod );

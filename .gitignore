@@ -22,3 +22,4 @@ tags
 xt/*.txt
 META.yml
 check_dist
+nytprof/
