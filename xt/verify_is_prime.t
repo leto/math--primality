@@ -5,15 +5,16 @@ use warnings;
 use lib 'lib';
 use File::Spec::Functions;
 use Math::Primality qw/ is_prime /;
-print "1..10000\n";
-$|++;
+use Math::Primality::AKS qw/is_aks_prime/;
+print "1..20000\n";
 
 my $t = 1;
 while(my $line = <DATA>) {
     next if $line =~ m/^#/;
     my @nums = split /\s+/, $line;
     for my $n (@nums) {
-        print is_prime( $n ) ? "ok $t - $n is a prime\n" : "not ok $t - $n is a prime\n";
+        print is_prime( $n ) ? "ok $t - $n is a prime (is_prime)\n" : "not ok $t - $n is a prime\n";
+        print is_aks_prime( $n ) ? "ok $t - $n is a prime (is_aks_prime)\n" : "not ok $t - $n is a prime\n";
         $t++;
     }
 }
