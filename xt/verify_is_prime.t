@@ -14,6 +14,7 @@ while(my $line = <DATA>) {
     my @nums = split /\s+/, $line;
     for my $n (@nums) {
         print is_prime( $n ) ? "ok $t - $n is a prime (is_prime)\n" : "not ok $t - $n is a prime\n";
+        $t++;
         print is_aks_prime( $n ) ? "ok $t - $n is a prime (is_aks_prime)\n" : "not ok $t - $n is a prime\n";
         $t++;
     }
