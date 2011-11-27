@@ -618,7 +618,7 @@ sub prime_count($) {
 
 =head1 AUTHORS
 
-Jonathan Leto, C<< <jonathan at leto.net> >>
+Jonathan "Duke" Leto, C<< <jonathan at leto.net> >>
 Bob Kuo, C<< <bobjkuo at gmail.com> >>
 
 =head1 BUGS
@@ -679,7 +679,7 @@ L<http://search.cpan.org/dist/Math::Primality>
 
 =head1 COPYRIGHT & LICENSE
 
-Copyright 2009 Jonathan Leto, all rights reserved.
+Copyright 2009-2011 Jonathan "Duke" Leto, all rights reserved.
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.
