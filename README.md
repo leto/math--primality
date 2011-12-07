@@ -1,8 +1,8 @@
-Math::Primality
+# Math::Primality
 
-Advanced Primality Algorithms using GMP
+Advanced Primality Algorithms using Math::GMPz
 
-INSTALLATION
+# Installation
 
 To install this module, run the following commands:
 
@@ -11,7 +11,7 @@ To install this module, run the following commands:
 	./Build test
 	./Build install
 
-SUPPORT AND DOCUMENTATION
+# Support
 
 After installing, you can find documentation for this module with the
 perldoc command.
@@ -33,9 +33,11 @@ You can also look for information at:
         http://search.cpan.org/dist/Math::Primality
 
 
-COPYRIGHT AND LICENCE
+# Copyright
 
-Copyright (C) 2009 Jonathan Leto
+Copyright (C) 2009-2011 Jonathan "Duke" Leto
+
+# License
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.
