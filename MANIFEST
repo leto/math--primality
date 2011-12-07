@@ -8,17 +8,19 @@ CREDITS
 examples/is_strong
 examples/project_euler/10/project_euler_10.pl
 lib/Math/Primality.pm
-Makefile.PL
+lib/Math/Primality/AKS.pm
+lib/Math/Primality/BigPolynomial.pm
 MANIFEST			This list of files
 MANIFEST.SKIP
 META.yml
-README
+README.md
 ROADMAP
 spec/bpsw/bpsw1.c
 spec/bpsw/trn.c
 spec/bpsw/trn.h
 t/00-load.t
 t/boilerplate.t
+t/is_aks_prime.t
 t/is_prime.t
 t/is_pseudoprime.t
 t/is_strong_lucas_pseudoprime.t
@@ -32,3 +34,5 @@ xt/verify_is_prime_long.t
 xt/verify_next_prime_long.t
 xt/verify_prime_count.t
 xt/verify_strong.t
+Makefile.PL
+META.json

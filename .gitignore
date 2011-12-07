@@ -22,3 +22,6 @@ tags
 xt/*.txt
 META.yml
 check_dist
+MYMETA.json
+MYMETA.yml
+META.json

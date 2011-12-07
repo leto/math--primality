@@ -13,6 +13,7 @@ my $builder = Module::Build->new(
         'Test::More'      => 0,
         'Test::Exception' => 0,
     },
+    configure_requires => { 'Module::Build' => 0.38 },
     requires => {
         'Math::GMPz'      => 0.26,
     },
