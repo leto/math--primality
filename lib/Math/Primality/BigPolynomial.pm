@@ -112,8 +112,8 @@ sub mpz_poly_mod_mult {
 
     $rop->clear();
 
-    my $xdeg   = $x->degree();
-    my $ydeg   = $y->degree();
+    my $xdeg   = $x ? $x->degree() : 0;
+    my $ydeg   = $y ? $y->degree() : 0;
     my $maxdeg = $xdeg < $ydeg ? $ydeg : $xdeg;
 
   LOOP: for ( my $i = 0 ; $i < $polymod ; $i++ ) {

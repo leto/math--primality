@@ -23,3 +23,5 @@ xt/*.txt
 META.yml
 check_dist
 nytprof/
+MYMETA.json
+MYMETA.yml
