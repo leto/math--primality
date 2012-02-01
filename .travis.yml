@@ -3,7 +3,7 @@ before_script:
     - curl -L http://cpanmin.us | sudo perl - --self-upgrade
     - perl -Mlocal::lib >> /tmp/local_lib_junk.sh && source /tmp/local_lib_junk.sh
     - export CI_USER=$USER
-    - mkdir ~/perl5 && sudo chown -R $CI_USER ~/.cpanm ~/perl5
+    - sudo chown -R $CI_USER ~/.cpanm ~/perl5
 script: "cpanm --installdeps .; perl Build.PL; ./Build test"
 # branches:
 #   only:
