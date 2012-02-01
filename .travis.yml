@@ -1,9 +1,9 @@
 before_script:
-    - sudo apt-get install libgmp3-dev
+    - sudo apt-get install liblocal-lib-perl libgmp3-dev
     - curl -L http://cpanmin.us | sudo perl - --self-upgrade
-    - mkdir ~/perl5
     - perl -Mlocal::lib >> /tmp/local_lib_junk.sh && source /tmp/local_lib_junk.sh
-    - sudo chown -R $CI_USER ~/.cpanm ~/perl5
+    - export CI_USER=$USER
+    - mkdir ~/perl5 && sudo chown -R $CI_USER ~/.cpanm ~/perl5
 script: "cpanm --installdeps .; perl Build.PL; ./Build test"
 # branches:
 #   only:
