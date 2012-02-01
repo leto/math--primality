@@ -4,6 +4,7 @@ before_script:
     - perl -Mlocal::lib >> /tmp/local_lib_junk.sh && source /tmp/local_lib_junk.sh
     - export CI_USER=$USER
     - sudo chown -R $CI_USER ~/.cpanm ~/perl5
+    - cpanm Test::Pod
 script: "cpanm --installdeps .; perl Build.PL; ./Build test"
 # branches:
 #   only:
