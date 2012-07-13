@@ -2,6 +2,8 @@
 
 Advanced Primality Algorithms using Math::GMPz
 
+[![Build Status](https://secure.travis-ci.org/leto/math--primality.png)](http://travis-ci.org/leto/math--primality)
+
 # Installation
 
 To install this module, run the following commands:
@@ -35,7 +37,7 @@ You can also look for information at:
 
 # Copyright
 
-Copyright (C) 2009-2011 Jonathan "Duke" Leto
+Copyright (C) 2009-2012 Jonathan "Duke" Leto
 
 # License
 
