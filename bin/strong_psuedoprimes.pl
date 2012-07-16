@@ -5,6 +5,8 @@ use lib 'lib';
 use Math::Primality qw/is_strong_pseudoprime is_prime/;
 $|++;
 
+# PODNAME: strong_pseudoprimes.pl
+
 my ($base, $start, $end) = @ARGV;
 die "USAGE:$0 base start end\n" unless ($base && $start >= 0 && $end > $start);
 
