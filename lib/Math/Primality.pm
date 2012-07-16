@@ -69,18 +69,14 @@ use constant
 
 use constant GMP => 'Math::GMPz';
 
+# ABSTRACT: Check for primes with Perl
+
 =head1 NAME
 
 Math::Primality - Advanced Primality Algorithms using GMP
 
-=head1 VERSION
-
-Version 0.04
 
 =cut
-
-our $VERSION = '0.04_01';
-$VERSION = eval $VERSION;
 
 
 our @EXPORT_OK = qw/is_pseudoprime is_strong_pseudoprime is_strong_lucas_pseudoprime is_prime next_prime prev_prime prime_count/;
