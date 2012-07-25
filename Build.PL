@@ -4,13 +4,14 @@ use Module::Build;
 
 # NOTE: This Build.PL is to make it easier for people without dzil
 # to install dependencies/etc. It may be out of sync with dist.ini
+# and dist_version needs to be manually updated, for now.
 
 my $builder = Module::Build->new(
     module_name         => 'Math::Primality',
     license             => 'perl',
     dist_author         => 'Jonathan Leto <jonathan@leto.net>',
     dist_abstract       => 'Advanced Primality Algorithms using GMP',
-    dist_version_from   => 'lib/Math/Primality.pm',
+    dist_version        => '0.05',
     include_dirs        => '',
     build_requires => {
         'Test::More'      => 0,
