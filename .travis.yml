@@ -6,6 +6,10 @@ perl:
 before_script:
     - sudo apt-get install libgmp3-dev
     - cpanm Test::Pod # optional dependency
+
+install:
+    - cpanm -v --installdeps --notest --mirror http://cpan.mirrors.travis-ci.org .
+
 script: "perl Build.PL; ./Build test"
 # branches:
 #   only:
