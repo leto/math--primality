@@ -10,18 +10,13 @@ use constant DEBUG => 0;
 
 use constant GMP => 'Math::GMPz';
 
+# ABSTRACT: Check for primality using the AKS (Agrawal-Kayal-Saxena) algorithm
+
 =head1 NAME
 
-Math::Primality::AKS - The Agrawal-Kayal-Saxena primality testing algorithm
-
-=head1 VERSION
-
-Version 0.01
+Math::Primality::AKS - Check for primes with AKS
 
 =cut
-
-our $VERSION = '0.01';
-$VERSION = eval $VERSION;
 
 our @EXPORT_OK = qw/is_aks_prime/;
 

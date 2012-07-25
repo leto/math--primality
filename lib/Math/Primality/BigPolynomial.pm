@@ -4,6 +4,15 @@ use strict;
 use warnings;
 use Math::GMPz;
 
+# ABSTRACT: Big Polynomials
+
+=head1 NAME
+
+Math::Primality::BigPolynomials - Polynomials with BigInts
+
+=cut
+
+
 sub new {
     my $self              = {};
     my $class             = shift;
