@@ -18,9 +18,6 @@ Math::Primality::AKS - Check for primes with AKS
 
 =cut
 
-our $VERSION = '0.01';
-$VERSION = eval $VERSION;
-
 our @EXPORT_OK = qw/is_aks_prime/;
 
 our %EXPORT_TAGS = ( all => \@EXPORT_OK );
