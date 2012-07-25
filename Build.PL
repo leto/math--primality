@@ -2,6 +2,9 @@ use strict;
 use warnings;
 use Module::Build;
 
+# NOTE: This Build.PL is to make it easier for people without dzil
+# to install dependencies/etc. It may be out of sync with dist.ini
+
 my $builder = Module::Build->new(
     module_name         => 'Math::Primality',
     license             => 'perl',
