@@ -12,9 +12,6 @@ BEGIN {
 }
 use Math::Primality::AKS qw/is_aks_prime/;
 
-diag( "Testing Math::Primality::AKS $Math::Primality::AKS::VERSION, Perl $], $^X" );
-
-
 my $z = Math::GMPz->new(3);
 ok( is_aks_prime($z), "is_aks_prime should handle Math::GMPz objects, three is prime" );
 ok( is_aks_prime(2), '2 is prime');
