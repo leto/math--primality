@@ -107,8 +107,9 @@ sub clear {
 }
 
 sub mpz_poly_mod_mult {
-    my $self = shift;
     my ( $rop, $x, $y, $mod, $polymod ) = @_;
+
+    die "mpz_poly_mod_mult: polymod must be defined!" unless $polymod;
 
     $rop->clear();
 
@@ -120,7 +121,7 @@ sub mpz_poly_mod_mult {
         my $sum  = Math::GMPz->new(0);
         my $temp = Math::GMPz->new(0);
         for ( my $j = 0 ; $j <= $i ; $j++ ) {
-            Rmpz_add( $temp,
+            Rmpz_add($temp, $temp,
                 $y->getCoef( $i - $j ) + $y->getCoef( $i + $polymod - $j ) );
             Rmpz_mul( $temp, $x->getCoef($j), $temp );
             Rmpz_add( $sum, $sum, $temp );
@@ -144,8 +145,9 @@ sub mpz_poly_mod_mult {
 }
 
 sub mpz_poly_mod_power {
-    my $self = shift;
     my ( $rop, $x, $power, $mult_mod, $poly_mod ) = @_;
+
+    die "mpz_poly_mod_power: polymod must be defined!" unless $poly_mod;
 
     $rop->clear();
     $rop->setCoef( Math::GMPz->new(1), 0 );
