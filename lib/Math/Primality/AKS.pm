@@ -42,7 +42,9 @@ our %EXPORT_TAGS = ( all => \@EXPORT_OK );
 
 =head1 FUNCTIONS
 
-=head2 aks($n)
+=head2 is_aks_prime($n)
+
+Returns 1 if $n is an AKS prime, 0 if it is not.
 
 =cut
 
@@ -120,6 +122,7 @@ sub is_aks_prime($) {
         $base->setCoef(1, 1);
 
         Math::Primality::BigPolynomial::mpz_poly_mod_power($res, $base, $n, $n, $intr);
+
 
         if($res->isEqual($compare)) {
             debug "Found not prime at $a\n";
