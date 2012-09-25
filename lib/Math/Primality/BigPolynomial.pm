@@ -47,6 +47,7 @@ sub getCoef {
     if ( $i > $self->degree() ) {
         return 0;
     }
+    return undef if $i < 0;
     return ${ $self->{COEF} }[$i];
 }
 
