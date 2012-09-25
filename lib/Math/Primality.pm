@@ -231,18 +231,9 @@ sub is_strong_pseudoprime($;$)
     }
 
     map {
-        # successively square $residue, $n is a strong psuedoprime
-        # if any of these are congruent to -1 (mod $n)
-        Rmpz_mul($residue,$residue,$residue);   # $residue = $residue * $residue
-        debug "$_: r=$residue" if DEBUG;
-
-        my $mod = GMP->new();
-        Rmpz_mod($mod, $residue, $n);           # $mod = $residue mod $n
-        debug "$_:$residue % $n = $mod " if DEBUG;
-        $mod = Rmpz_cmp($mod, $m);
-
-        if ($mod == 0) {
-            debug "$_:$mod == $m => spsp!" if DEBUG;
+        Rmpz_powm($residue, $residue, GMP->new(2), $n);
+        if (Rmpz_cmp($residue, $m) == 0) {
+            debug "$_:$residue == $m => spsp!" if DEBUG;
             return 1;
         }
     } ( 1 .. $s-1 );
