@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 use Test::More tests => 232;
-use Carp::Always;
+#use Carp::Always;
 
 use Math::GMPz qw/:mpz/;
 use POSIX qw(ceil floor); # for testing _Rmpz_logbase2* functions

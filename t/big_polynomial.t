@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 use Test::More;
-use Carp::Always;
+#use Carp::Always;
 
 use Math::GMPz qw/:mpz/;
 
