@@ -1,0 +1,24 @@
+language: "perl"
+perl:
+  - "5.16"
+  - "5.14"
+  - "5.12"
+  - "5.10"
+before_script:
+    - sudo apt-get install libgmp3-dev
+    - cpanm Test::Pod # optional dependency
+
+install:
+    - cpanm -v --installdeps --notest --mirror http://cpan.mirrors.travis-ci.org .
+
+script: "perl Build.PL; ./Build test"
+# branches:
+#   only:
+#     - master
+notifications:
+  recipients:
+    - duke@leto.net
+  email:
+    on_success: change
+    on_failure: always
+#env:
