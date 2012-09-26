@@ -9,21 +9,24 @@ sub new {
     my $class             = shift;
     my $construction_junk = shift;
     if ($construction_junk) {
-        if ( ref($construction_junk) eq 'ARRAY' ) {
+        my $type = ref $construction_junk;
+        if ( $type eq 'ARRAY' ) {
             $self->{COEF}   = $construction_junk;
-            $self->{DEGREE} = scalar(@$construction_junk);
-        } else {
-            $self->{DEGREE} = $construction_junk;
-            my @a = [];
-            for ( my $i = 0 ; $i < $construction_junk ; $i++ ) {
-                push @a, Math::GMPz->new(0);
+        } elsif ( $type eq 'Math::Primality::BigPolynomial') {
+            foreach my $coef (@{$construction_junk->{COEF}}) {
+              my $temp = Rmpz_init_set($coef);
+              push @{$self->{COEF}}, $temp;
             }
-            $self->{COEF} = \@a;
+        } else {
+            my $a = [];
+            for ( my $i = 0 ; $i < $construction_junk ; $i++ ) {
+                push @$a, Math::GMPz->new(0);
+            }
+            $self->{COEF} = $a;
         }
     }
     else {
         $self->{COEF}   = [ Math::GMPz->new(0) ];
-        $self->{DEGREE} = 1;
     }
     bless( $self, $class );
     return $self;
@@ -37,18 +40,17 @@ sub coef {
 
 sub degree {
     my $self = shift;
-    if (@_) { $self->{DEGREE} = shift }
-    return $self->{DEGREE};
+    return (scalar @{$self->{COEF}} - 1);
 }
 
 sub getCoef {
     my $self = shift;
     my $i    = shift;
     if ( $i > $self->degree() ) {
-        return 0;
+        return Math::GMPz->new(0);
     }
     return undef if $i < 0;
-    return ${ $self->{COEF} }[$i];
+    return $self->{COEF}->[$i];
 }
 
 sub isEqual {
@@ -74,41 +76,40 @@ sub setCoef {
     }
 
     if ( $index > $self->degree() ) {
-        for ( my $j = $self->degree() + 1 ; $j <= $index ; $j++ ) {
+        for ( my $j = $self->degree() + 1 ; $j < $index ; $j++ ) {
             push @{ $self->{COEF} }, Math::GMPz->new(0);
         }
-        push @{ $self->{COEF} }, $new_coef;
+        $self->{COEF}->[$index] = $new_coef;
         $self->degree($index);
     }
     else {
-        ${ $self->{COEF} }[$index] = $new_coef;
+        $self->{COEF}->[$index] = $new_coef;
     }
 }
 
 sub compact {
     my $self = shift;
     my $i    = 0;
-  LOOP: for ( $i = $self->degree() - 1 ; $i > 0 ; $i-- ) {
+  LOOP: for ( $i = $self->degree(); $i > 0 ; $i-- ) {
         if ( Math::GMPz::Rmpz_cmp_ui( $self->getCoef($i), 0 ) != 0 ) {
             last LOOP;
         }
         pop @{ $self->{COEF} };
     }
     if ( $i != $self->degree() ) {
-        $self->degree( $i + 1 );
+        $self->degree( $i );
     }
 }
 
 sub clear {
     my $self = shift;
-    $self->{COEF}   = undef;
-    $self->{DEGREE} = undef;
     $self->{COEF}   = [ Math::GMPz->new(0) ];
-    $self->{DEGREE} = 1;
 }
 
 sub mpz_poly_mod_mult {
-    my ( $rop, $x, $y, $mod, $polymod ) = @_;
+    my ( $rop, $copy_x, $copy_y, $mod, $polymod ) = @_;
+    my $x = Math::Primality::BigPolynomial->new($copy_x);
+    my $y = Math::Primality::BigPolynomial->new($copy_y);
 
     die "mpz_poly_mod_mult: polymod must be defined!" unless $polymod;
 
@@ -122,8 +123,8 @@ sub mpz_poly_mod_mult {
         my $sum  = Math::GMPz->new(0);
         my $temp = Math::GMPz->new(0);
         for ( my $j = 0 ; $j <= $i ; $j++ ) {
-            Rmpz_add($temp, $temp,
-                $y->getCoef( $i - $j ) + $y->getCoef( $i + $polymod - $j ) );
+            Rmpz_add($temp, $y->getCoef( $i - $j ),
+                     $y->getCoef( $i + $polymod - $j ) );
             Rmpz_mul( $temp, $x->getCoef($j), $temp );
             Rmpz_add( $sum, $sum, $temp );
         }
@@ -159,7 +160,7 @@ sub mpz_poly_mod_power {
         mpz_poly_mod_mult( $rop, $rop, $rop, $mult_mod, $poly_mod );
 
         if ( Rmpz_tstbit( $power, $i ) ) {
-            mpz_poly_mod_mul( $rop, $rop, $x, $mult_mod, $poly_mod );
+            mpz_poly_mod_mult( $rop, $rop, $x, $mult_mod, $poly_mod );
         }
 
         if ( $i == 0 ) {

@@ -114,12 +114,12 @@ sub is_aks_prime($) {
         my $final_size = Math::GMPz->new(0);
         Rmpz_mod($final_size, $n, $r);
         my $compare = Math::Primality::BigPolynomial->new(Rmpz_get_ui($final_size));
-        $compare->setCoef(1, Rmpz_get_ui($final_size));
-        $compare->setCoef($a, 0);
+        $compare->setCoef(Math::GMPz->new(1), $final_size);
+        $compare->setCoef(Math::GMPz->new($a), 0);
         my $res = Math::Primality::BigPolynomial->new($intr);
         my $base = Math::Primality::BigPolynomial->new(1);
-        $base->setCoef($a, 0);
-        $base->setCoef(1, 1);
+        $base->setCoef(Math::GMPz->new(0), $a);
+        $base->setCoef(Math::GMPz->new(1), 1);
 
         Math::Primality::BigPolynomial::mpz_poly_mod_power($res, $base, $n, $n, $intr);
 
@@ -139,11 +139,10 @@ Jonathan "Duke" Leto C<< <jonathan@leto.net> >>
 
 =head1 BUGS
 
-Please report any bugs or feature requests to C<bug-math-primality-aks at rt.cpan.org>,
-or through the web interface at
-L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Math::Primality::AKS>.  I will be 
-notified, and then you'll automatically be notified of progress on your bug as I
-make changes.
+Please report any bugs or feature requests to
+C<bug-math-primality-aks at rt.cpan.org>, or through the web interface at
+L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Math::Primality::AKS>.
+I will be notified, and then you'll automatically be notified of progress on your bug as I make changes.
 
 =head1 THANKS
 
