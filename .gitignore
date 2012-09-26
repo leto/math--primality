@@ -23,10 +23,7 @@ tags
 xt/*.txt
 META.yml
 check_dist
-<<<<<<< HEAD
-MYMETA.json
+MYMETA.*
 MYMETA.yml
 META.json
 nytprof/
-MYMETA.json
-MYMETA.yml
