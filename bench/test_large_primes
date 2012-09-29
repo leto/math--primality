@@ -1,8 +1,10 @@
 #!/usr/bin/perl -w
 
 use strict;
+use warnings;
 use Math::Primality qw/is_prime/;
 use Math::Pari qw/isprime/;
+use Math::Primality::AKS qw/is_aks_prime/;
 use Benchmark qw/:all/;
 use Math::GMPz;
 
@@ -16,6 +18,7 @@ print "Benchmarking Math::Primality version $Math::Primality::VERSION against Ma
 print "Psuedorandom numbers of magnitude 10 ^ $magnitude\n";
 
 cmpthese($count,{
-    'is_prime' => sub { is_prime($_) for @nums },
-    'isprime' => sub { isprime($_) for @nums },
+    'Math::Primality::is_prime'          => sub { is_prime($_) for @nums },
+    'Math::Pari::isprime'                => sub { isprime($_) for @nums },
+    'Math::Primality::AKS::is_aks_prime' => sub { is_aks_prime($_) for @nums },
 });
