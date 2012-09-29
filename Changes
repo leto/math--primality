@@ -1,5 +1,12 @@
 =head1 Math::Primality Release Summaries
 
+=head2 0.05
+
+ The AKS primality test (also known as Agrawal–Kayal–Saxena primality test) was implemented
+ in Math::Primality::AKS.
+
+ https://en.wikipedia.org/wiki/AKS_primality_test
+
 =head2 0.04
 
  a version for everyone!
