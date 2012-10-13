@@ -137,8 +137,8 @@ sub is_pseudoprime($;$)
     return 0 unless $n;
     $base ||= 2;
     # we should check if we are passed a GMPz object
-    $base   = GMP->new($base);
-    $n      = GMP->new($n);
+    $base   = GMP->new("$base");
+    $n      = GMP->new("$n");
 
     my $m    = GMP->new();
     Rmpz_sub_ui($m, $n, 1);              # $m = $n - 1
@@ -297,7 +297,7 @@ Then a strong Lucas-Selfridge pseudoprime is an odd, non-perfect square number $
 sub is_strong_lucas_pseudoprime($)
 {
     my ($n) = @_;
-    $n      = GMP->new($n);
+    $n      = GMP->new("$n");
     # we also need to handle all N < 3 and all even N 
     my $cmp = _check_two_and_even($n);
     return $cmp if $cmp != 2;
@@ -480,7 +480,7 @@ L<http://primes.utm.edu/prove/prove2_3.html> if $n < 9,080,191 is a both a base-
 
 sub is_prime($) {
     my $n = shift;
-    $n = GMP->new($n);
+    $n = GMP->new("$n");
 
     if (Rmpz_cmp_ui($n, 2) == -1) {
         return 0;
