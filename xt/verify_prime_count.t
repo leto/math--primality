@@ -12,9 +12,8 @@ use Math::Primality qw/ prime_count /;
 
 my $i = 1;
 while (<DATA>) {
-    print "i=$i\n";
     chomp;
-    ok ( prime_count(10**$i) == $_, "$_ primes <= 10^$i");
+    cmp_ok ( prime_count(10**$i), '==', $_, "$_ primes <= 10^$i");
     $i++;
 }
 
@@ -26,7 +25,7 @@ __DATA__
 9592
 78498
 664579
-5761445
+5761455
 50847534
 455052511
 4118054813
