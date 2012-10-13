@@ -200,9 +200,8 @@ sub is_strong_pseudoprime($;$)
     my ($n, $base) = @_;
 
     $base ||= 2;
-    # we should check if we are passed a GMPz object
-    $base   = GMP->new($base);
-    $n      = GMP->new($n);
+    $base   = GMP->new("$base");
+    $n      = GMP->new("$n");
 
     # unnecessary but faster if $n is even
     my $cmp = _check_two_and_even($n);
@@ -518,7 +517,8 @@ Checking of primality is implemented by is_prime()
 =cut
 
 sub next_prime($) {
-  my $n = GMP->new($_[0]);
+  my $n = shift;
+  $n = GMP->new("$n");
   my $cmp = Rmpz_cmp_ui($n, 2 ); #check if $n < 2
   if ($cmp < 0) {
     return GMP->new(2);
@@ -552,7 +552,8 @@ Checking of primality is implemented by is_prime()
 =cut
 
 sub prev_prime($) {
-  my $n = GMP->new($_[0]);
+  my $n = shift;
+  $n = GMP->new("$n");
   my $cmp = Rmpz_cmp_ui($n, 3);   # compare N with 3
   if ($cmp == 0) {                # N = 3
     return GMP->new(2);
@@ -593,8 +594,10 @@ Checking of primality is implemented by is_prime()
 =cut
 
 sub prime_count($) {
-  my $n = GMP->new($_[0]); # check if $n needs to be a Math::GMPz object
+  my $n      = shift;
+  $n         = GMP->new("$n");
   my $primes = 0;
+
   return 0 if $n <= 1;
 
   for (my $i = GMP->new(0); Rmpz_cmp($i, $n) <= 0; Rmpz_add_ui($i, $i, 1)) {
