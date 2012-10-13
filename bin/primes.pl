@@ -2,17 +2,23 @@
 use strict;
 use warnings;
 use lib 'lib';
-use Math::Primality qw/is_prime/;
+use Math::Primality qw/is_prime next_prime/;
+use Math::GMPz;
 $|++;
 
 # PODNAME: primes.pl
 # ABSTRACT: Print all primes between the two integers
 
 my ($start, $end) = @ARGV;
-die "USAGE:$0 start end\n" unless ($start >= 0 && $end > $start);
+die "USAGE:$0 start end\n" unless (@ARGV == 2);
 
-my $i=$start;
+die "$start isn't a positive integer" if $start =~ tr/0123456789//c;
+die "$end isn't a positive integer" if $end =~ tr/0123456789//c;
 
-while ( $i++ < $end ){
-    print "$i\n" if is_prime($i);
+$start = Math::GMPz->new("$start");
+$end   = Math::GMPz->new("$end");
+$start = next_prime($start) unless is_prime($start);
+while ($start <= $end) {
+    print "$start\n";
+    $start = next_prime($start);
 }
