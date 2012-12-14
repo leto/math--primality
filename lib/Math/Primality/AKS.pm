@@ -73,12 +73,22 @@ sub is_aks_prime($) {
         return 0;
     }
 
-    if(Rmpz_probab_prime_p($n, 5)) {
+    # Is $r a probable prime? (with 5 Miller-Rabin tests)
+    if(Rmpz_probab_prime_p($r, 5)) {
         my $i = Math::GMPz->new(1);
         my $res = Math::GMPz->new(0);
 
-        INNERLOOP: for ( ; Rmpz_cmp($n, $limit) <= 0; Rmpz_add_ui($i, $i, 1)) {
-            Rmpz_powm($res, $n, $i, $r);
+        INNERLOOP: for ( ; Rmpz_cmp($i, $limit) <= 0; Rmpz_add_ui($i, $i, 1)) {
+                Rmpz_powm($res, $n, $i, $r);
+                #  Rotella uses the 'failing' variable
+                #  We want to pow(n,i) mod r != 1 for all values to the limit.
+                # Rotella 2005
+                # Section 4.5, page 22, lines 19-38 contains the loop looking for r.
+                # This is finding the min r where order_r(n) < limit, which it does by
+                # checking pow(n, i) mod r != 1 for all values from 1 .. limit and
+                # repeating for a larger r if any were 1.
+
+                # This is wrong
                 if (Rmpz_cmp_ui($res, 1) == 0) {
                     last OUTERLOOP;
                 }
