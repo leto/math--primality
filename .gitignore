@@ -28,3 +28,4 @@ MYMETA.yml
 META.json
 nytprof/
 nytprof.out
+*.sw?
