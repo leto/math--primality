@@ -595,7 +595,7 @@ Checking of primality is implemented by is_prime()
 
 sub prime_count($) {
   my $n      = shift;
-  $n         = GMP->new("$n");
+  $n = GMP->new("$n") unless ref($n) eq 'Math::GMPz';
   my $primes = 0;
 
   return 0 if $n <= 1;
