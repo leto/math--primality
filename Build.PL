@@ -19,7 +19,7 @@ my $builder = Module::Build->new(
     },
     configure_requires => { 'Module::Build' => 0.38 },
     requires => {
-        'Math::GMPz'      => '0.26',
+        'Math::GMPz'      => '0.34',
         'perl'            => '5.008',
     },
     add_to_cleanup      => [ 'Math-Primality-*' ],
