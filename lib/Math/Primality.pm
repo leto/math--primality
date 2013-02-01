@@ -96,7 +96,10 @@ our %EXPORT_TAGS = ( all => \@EXPORT_OK );
 
 =head1 DESCRIPTION
 
-Math::Primality implements is_prime() and next_prime() as a replacement for Math::PARI::is_prime().  It uses the GMP library through Math::GMPz.  The is_prime() method is actually a Baillie-PSW primality test which consists of two steps:
+Math::Primality implements is_prime() and next_prime() as a replacement for
+Math::PARI::is_prime().  It uses the GMP library through Math::GMPz.  The
+is_prime() method is actually a Baillie-PSW primality test which consists of two
+steps:
 
 =over 4
 
@@ -106,7 +109,14 @@ Math::Primality implements is_prime() and next_prime() as a replacement for Math
 
 =back
 
-At any point the function may return 2 which means N is definitely composite.  If not, N has passed the strong Baillie-PSW test and is either prime or a strong Baillie-PSW pseudoprime.  To date no counterexample (Baillie-PSW strong pseudoprime) is known to exist for N < 10^15.  Baillie-PSW requires O((log n)^3) bit operations.  See L<http://www.trnicely.net/misc/bpsw.html> for a more thorough introduction to the Baillie-PSW test. Also see L<http://mpqs.free.fr/LucasPseudoprimes.pdf> for a more theoretical introduction to the Baillie-PSW test. 
+At any point the function may return 2 which means N is definitely composite.
+If not, N has passed the strong Baillie-PSW test and is either prime or a strong
+Baillie-PSW pseudoprime.  To date no counterexample (Baillie-PSW strong
+pseudoprime) is known to exist for N < 10^15.  Baillie-PSW requires O((log n)^3)
+bit operations.  See L<http://www.trnicely.net/misc/bpsw.html> for a more
+thorough introduction to the Baillie-PSW test. Also see
+L<http://mpqs.free.fr/LucasPseudoprimes.pdf> for a more theoretical introduction
+to the Baillie-PSW test. 
 
 =head1 EXPORT
 
@@ -135,10 +145,10 @@ sub is_pseudoprime($;$)
 {
     my ($n, $base) = @_;
     return 0 unless $n;
+
     $base ||= 2;
-    # we should check if we are passed a GMPz object
-    $base   = GMP->new("$base");
-    $n      = GMP->new("$n");
+    $base   = GMP->new("$base") if ref($base) ne 'Math::GMPz';
+    $n      = GMP->new("$n")    if ref($n)    ne 'Math::GMPz';
 
     my $m    = GMP->new();
     Rmpz_sub_ui($m, $n, 1);              # $m = $n - 1
@@ -166,8 +176,9 @@ sub debug {
 
 =head2 is_strong_pseudoprime($n,$b)
 
-Returns true if $n is a base $b strong pseudoprime, false otherwise.  The variable $n should be a Perl integer
-or a Math::GMPz object. Strong psuedoprimes are often called Miller-Rabin pseudoprimes.
+Returns true if $n is a base $b strong pseudoprime, false otherwise.  The
+variable $n should be a Perl integer or a Math::GMPz object. Strong psuedoprimes
+are often called Miller-Rabin pseudoprimes.
 
 The default base of 2 is used if no base is given.
 
@@ -198,10 +209,11 @@ The second condition is checked by sucessive squaring $base^$d and reducing that
 sub is_strong_pseudoprime($;$)
 {
     my ($n, $base) = @_;
+    return 0 unless $n;
 
     $base ||= 2;
-    $base   = GMP->new("$base");
-    $n      = GMP->new("$n");
+    $base   = GMP->new("$base") if ref($base) ne 'Math::GMPz';
+    $n      = GMP->new("$n")    if ref($n)    ne 'Math::GMPz';
 
     # unnecessary but faster if $n is even
     my $cmp = _check_two_and_even($n);
@@ -296,7 +308,8 @@ Then a strong Lucas-Selfridge pseudoprime is an odd, non-perfect square number $
 sub is_strong_lucas_pseudoprime($)
 {
     my ($n) = @_;
-    $n      = GMP->new("$n");
+    $n      = GMP->new("$n") if ref($n) ne 'Math::GMPz';
+
     # we also need to handle all N < 3 and all even N 
     my $cmp = _check_two_and_even($n);
     return $cmp if $cmp != 2;
@@ -479,7 +492,7 @@ L<http://primes.utm.edu/prove/prove2_3.html> if $n < 9,080,191 is a both a base-
 
 sub is_prime($) {
     my $n = shift;
-    $n = GMP->new("$n");
+    $n = GMP->new("$n") unless ref($n) eq 'Math::GMPz';
 
     if (Rmpz_cmp_ui($n, 2) == -1) {
         return 0;
@@ -518,7 +531,8 @@ Checking of primality is implemented by is_prime()
 
 sub next_prime($) {
   my $n = shift;
-  $n = GMP->new("$n");
+  $n    = GMP->new("$n")    if ref($n)    ne 'Math::GMPz';
+
   my $cmp = Rmpz_cmp_ui($n, 2 ); #check if $n < 2
   if ($cmp < 0) {
     return GMP->new(2);
@@ -553,7 +567,8 @@ Checking of primality is implemented by is_prime()
 
 sub prev_prime($) {
   my $n = shift;
-  $n = GMP->new("$n");
+  $n    = GMP->new("$n")    if ref($n)    ne 'Math::GMPz';
+
   my $cmp = Rmpz_cmp_ui($n, 3);   # compare N with 3
   if ($cmp == 0) {                # N = 3
     return GMP->new(2);
@@ -672,7 +687,7 @@ L<http://search.cpan.org/dist/Math::Primality>
 
 =head1 COPYRIGHT & LICENSE
 
-Copyright 2009-2011 Jonathan "Duke" Leto, all rights reserved.
+Copyright 2009-2013 Jonathan "Duke" Leto and Bob Kuo, all rights reserved.
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.
