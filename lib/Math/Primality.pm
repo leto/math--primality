@@ -494,12 +494,12 @@ sub is_prime($) {
     my $n = shift;
     $n = GMP->new("$n") unless ref($n) eq 'Math::GMPz';
 
-    if (Rmpz_cmp_ui($n, 2) == -1) {
-        return 0;
-    }
-    if (Rmpz_cmp_ui($n, 257) == -1) {
-        return _is_small_prime($n);
-    } elsif ( Rmpz_cmp_ui($n, 9_080_191) == -1 ) {
+    return 0 if Rmpz_cmp_ui($n, 2) == -1;
+    return _is_small_prime($n) if Rmpz_cmp_ui($n, 257) == -1;
+
+    return 0 if Rmpz_even_p($n);
+
+    if ( Rmpz_cmp_ui($n, 9_080_191) == -1 ) {
         return 0 unless is_strong_pseudoprime($n,31);
         return 0 unless is_strong_pseudoprime($n,73);
         return 2;
