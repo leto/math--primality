@@ -1,5 +1,24 @@
 =head1 Math::Primality Release Summaries
 
+=head2 0.08
+
+  Use a GCD in the prime_count loop, making it much faster.
+
+=head2 0.07
+
+  All functions should work with objects that can stringify themselves.
+  Math::BigInt is the obvious example of this.
+
+  primes.pl uses next_prime instead of is_prime.
+
+=head2 0.06
+
+  is_strong_pseudoprime() is more efficient for large inputs.
+
+  aks($n) changed to is_aks_prime($n).
+
+  Add Math::Primality::BigPolynomial, and use it for AKS.
+
 =head2 0.05
 
  The AKS primality test (also known as Agrawal–Kayal–Saxena primality test) was implemented
