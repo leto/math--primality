@@ -5,28 +5,45 @@ use warnings;
 use Math::Primality qw/is_prime/;
 use Math::Pari qw/isprime/;
 use Math::Primality::AKS qw/is_aks_prime/;
+use Math::Prime::Util::GMP;
 use Math::Prime::Util;
 use Benchmark qw/:all/;
 use Math::GMPz;
+use Math::BigInt try=>'GMP,Pari';
 
 my $magnitude = shift || 50;
+my $count = shift || -1;
+my $howmany = 100;
 
-my $gmpz = Math::GMPz->new('1' . ('0'x$magnitude) );
-my $count = shift || 200;
-my @nums = map { "$_" } map { int(1+rand(9)) * $gmpz + int(1+rand(100)) } (1..100);
+my @gmpnums;
+{
+  my $gmpz_base = Math::GMPz->new('1' . ('0'x$magnitude) );
+  my $gmpz_range = Math::GMPz->new('8' . ('9'x$magnitude) );
+  my @gnums = map { Math::GMPz::Rmpz_init2(100) } 1 .. $howmany;
+  my $seed = Math::GMPz::Rmpz_init_set_str(1, 10);
+  my $rstate = Math::GMPz::rand_init($seed);
+  Math::GMPz::Rmpz_urandomm(@gnums, $rstate, $gmpz_range+1, scalar @gnums);
+  Math::GMPz::rand_clear($rstate);
+  @gmpnums = map { $gmpz_base + $_ } @gnums;
+}
+my @strnums = map { "$_" } @gmpnums;
+my @bignums = map { Math::BigInt->new($_) } @strnums;
 
 print <<BENCH;
 Benchmarking:
 Math::Primality $Math::Primality::VERSION
 Math::Pari $Math::Pari::VERSION
-Math::Prime::Util $Math::Pari::VERSION
+Math::Prime::Util $Math::Prime::Util::VERSION
+Math::Prime::Util::GMP $Math::Prime::Util::GMP::VERSION
 BENCH
 
-print "Psuedorandom numbers of magnitude 10 ^ $magnitude\n";
+print "$howmany $magnitude-digit psuedorandom numbers\n";
 
 cmpthese($count,{
-    'Math::Primality::is_prime'          => sub { is_prime($_) for @nums },
-    'Math::Pari::isprime'                => sub { isprime($_) for @nums },
-    'Math::Primality::AKS::is_aks_prime' => sub { is_aks_prime($_) for @nums },
-    'Math::Prime::Util::is_prime'        => sub { Math::Prime::Util::is_prime($_) for @small_nums },
+    'Math::Primality::is_prime'      => sub { is_prime($_) for @gmpnums },
+    'Math::Pari::isprime'            => sub { isprime($_) for @strnums },
+    #'Math::Primality::AKS::is_aks_prime' => sub { is_aks_prime($_) for @strnums },
+    'MPU::is_prob_prime'             => sub { Math::Prime::Util::GMP::is_prob_prime($_) for @bignums },
+    'MPU::GMP::is_prime'             => sub { Math::Prime::Util::GMP::is_prime($_) for @strnums },
+    'MPU::GMP::is_prob_prime'        => sub { Math::Prime::Util::GMP::is_prob_prime($_) for @strnums },
 });
