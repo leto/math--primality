@@ -2,7 +2,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 498;
+use Test::More tests => 498 + 1;
 
 use Math::Primality qw/next_prime/;
 use Math::GMPz;
@@ -45,4 +45,9 @@ my $n = 0;
 for (my $i = 0; $i < (scalar @small_primes) - 1; $i++) {
   $n = next_prime($small_primes[$i]);
   is("$n", "$small_primes[$i+1]", "the next prime after $small_primes[$i] is $small_primes[$i+1] ?= $n");
+}
+
+{
+  $n = next_prime("777777777777777777777777");
+  is("$n", "777777777777777777777787", "next_prime 777777777777777777777777");
 }

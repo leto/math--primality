@@ -2,7 +2,7 @@
 
 use strict;
 use warnings;
-use Test::More tests => 500;
+use Test::More tests => 500 + 1;
 
 use Math::Primality qw/prev_prime/;
 use Math::GMPz;
@@ -47,4 +47,9 @@ my $n = 0;
 for (my $i = (scalar @small_primes) - 1; $i > 0; $i--) {
   $n = prev_prime($small_primes[$i]);
   is("$n", "$small_primes[$i-1]", "the previous prime before $small_primes[$i] is $small_primes[$i-1]");
+}
+
+{
+  $n = prev_prime("777777777777777777777777");
+  is("$n", "777777777777777777777767", "prev_prime 777777777777777777777777");
 }
