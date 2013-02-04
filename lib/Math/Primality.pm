@@ -617,6 +617,8 @@ sub prime_count($) {
 
   do { $primes++ if $n >= $_ } for (2,3,5,7,11,13,17,19,23,29);
   for (my $i = GMP->new(31); Rmpz_cmp($i, $n) <= 0; Rmpz_add_ui($i, $i, 2)) {
+
+    # 33234846615 = 3*5*7*11*13*17*19*23*29
     next unless 1 == Rmpz_gcd_ui($Math::GMPz::NULL, $i, 3234846615);
     $primes++ if is_prime($i);
   }
