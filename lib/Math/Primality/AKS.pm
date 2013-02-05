@@ -70,60 +70,66 @@ sub is_aks_prime($) {
   # still do not match the speed of APR-CL or ECPP.
 
   my $n = GMP->new($_[0]);
+  # Step 0 - check that n is a positive integer >= 2;
+  if (Rmpz_cmp_ui($n, 2) < 0) {
+    debug "fails step 0 of aks - $n is in range\n";
+    return 0;  # negative, 0, or 1.
+  }
   # Step 1 - check if $n = m^d for some m, d
   # if $n is a power then return 0
   if (Rmpz_perfect_power_p($n)) {
-    debug "fails step 1 of aks - $n is a perfect power";
+    debug "fails step 1 of aks - $n is a perfect power\n";
     return 0;  # composite
   }
-  my $r = Math::GMPz->new(2);
+
+  # This will overestimate r a little, but it's the only good way to do it
+  # in GMP without MPFR.  What we want:
+  #    floor( log2(n) * log2(n) )
+  # What this does:
+  #    ceil(log2(n)) * ceil(log2(n))
+  # Ex: For 85991 r = 293 instead of 283, with polylimit 290 instead of 275.
   my $logn = Rmpz_sizeinbase($n, 2);
   my $limit = Math::GMPz->new($logn * $logn);
-  Rmpz_mul_ui($limit, $limit, 4);
 
-  # Witness search
+  # Search for first r where order(r, n) > limit
+  my $r = Math::GMPz->new(2);
   while (Rmpz_cmp($r, $n) == -1) {
     if(Rmpz_divisible_p($n, $r)) {
         debug "$n is divisible by $r\n";
         return 0;
     }
-    # We're following Rotella exactly.  If we weren't, then doing the
-    # order test followed by $r = next_prime($r) would make more sense.
-    if(Rmpz_probab_prime_p($r, 5)) {
-        my $i = Math::GMPz->new(1);
-        my $res = Math::GMPz->new(0);
-
-        my $failed = 0;
-        for ( ; Rmpz_cmp($i, $limit) <= 0; Rmpz_add_ui($i, $i, 1)) {
-            Rmpz_powm($res, $n, $i, $r);
-            if (Rmpz_cmp_ui($res, 1) == 0) {
-                $failed = 1;
-                last;
-            }
+    my $i = Math::GMPz->new(1);
+    my $res = Math::GMPz->new(0);
+    my $failed = 0;
+    for ( ; Rmpz_cmp($i, $limit) <= 0; Rmpz_add_ui($i, $i, 1)) {
+        Rmpz_powm($res, $n, $i, $r);
+        if (Rmpz_cmp_ui($res, 1) == 0) {
+            $failed = 1;
+            last;
         }
-        last if !$failed;
     }
-    Rmpz_add_ui($r, $r, 1);
+    last if !$failed;
+    Rmpz_nextprime($r, $r);
   }
-  if (Rmpz_cmp($r, $n) == 0) {
+  # We've performed trial division for every prime <= r.
+  # Hence if n > r*r then n is prime.
+  if (Rmpz_cmp($r*$r, $n) >= 0) {
       debug "Found $n is prime while checking for r\n";
       return 1;
   }
 
-    # Polynomial check
-    my $a;
-    my $sqrtr = Math::GMPz->new($r);
-
-    Rmpz_sqrt($sqrtr, $r);
-    my $polylimit = Math::GMPz->new(0);
-    Rmpz_add_ui($polylimit, $sqrtr, 1);
-    Rmpz_mul_ui($polylimit, $polylimit, $logn);
-    Rmpz_mul_ui($polylimit, $polylimit, 2);
+    # Polynomial check.  Limit is floor(log2n * sqrt(phi(r))).
+    # r is prime hence phi(r) = r-1.
+    my $sqrt_phi_r = Math::GMPz->new($r - 1);
+    my $plus_one = Rmpz_perfect_square_p($sqrt_phi_r) ? 0 : 1;
+    Rmpz_sqrt($sqrt_phi_r, $sqrt_phi_r);
+    my $polylimit = $logn * $sqrt_phi_r + $plus_one;
 
     my $intr = Rmpz_get_ui($r);
+    debug "Running poly check, r = $intr  polylimit = $polylimit\n";
 
-    for($a = 1; Rmpz_cmp_ui($polylimit, $a) >= 0; $a++) {
-        debug "Checking at $a\n";
+    for(my $a = 1; Rmpz_cmp_ui($polylimit, $a) >= 0; $a++) {
+        debug "Checking at $a / $polylimit\n";
         my $final_size = Math::GMPz->new(0);
         Rmpz_mod($final_size, $n, $r);
         my $compare = Math::Primality::BigPolynomial->new(Rmpz_get_ui($final_size));

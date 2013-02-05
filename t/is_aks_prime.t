@@ -1,8 +1,9 @@
 #!/usr/bin/env perl
 
 # We have to be careful with the inputs we give.  Unfortunately AKS is so
-# slow that we can't have it prove primality for any number >= 347, or
-# we'll take a *really* long time.
+# slow that we can't have it actually prove primality using the a,n,r
+# polynomial tests or we'll take a *really* long time.  With the current
+# implementation including the sqrt test this means < 85991.
 
 use strict;
 use warnings;
