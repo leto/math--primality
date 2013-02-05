@@ -112,7 +112,7 @@ steps:
 At any point the function may return 2 which means N is definitely composite.
 If not, N has passed the strong Baillie-PSW test and is either prime or a strong
 Baillie-PSW pseudoprime.  To date no counterexample (Baillie-PSW strong
-pseudoprime) is known to exist for N < 10^15.  Baillie-PSW requires O((log n)^3)
+pseudoprime) is known to exist for N < 2^64.  Baillie-PSW requires O((log n)^3)
 bit operations.  See L<http://www.trnicely.net/misc/bpsw.html> for a more
 thorough introduction to the Baillie-PSW test. Also see
 L<http://mpqs.free.fr/LucasPseudoprimes.pdf> for a more theoretical introduction
@@ -412,7 +412,7 @@ sub is_strong_lucas_pseudoprime($)
     return 0;
 }
 
-# selfridge's method for finding the tuple (D,P,Q) for is_strong_lucas_pseudoprime
+# Selfridge's method for finding the tuple (D,P,Q) for is_strong_lucas_pseudoprime
 # private functions expect a Math::GMPz object
 sub _find_dpq_selfridge($) {
   my $n = $_[0];
@@ -475,18 +475,30 @@ Returns 2 if $n is definitely prime, 1 is $n is a probable prime, 0 if $n is com
 
 is_prime() is implemented using the BPSW algorithim which is a combination of two probable-prime 
 algorithims, the strong Miller-Rabin test and the strong Lucas-Selfridge test.  While no
-psuedoprime has been found for N < 10^15, this does not mean there is not a pseudoprime. A 
-possible improvement would be to instead implement the AKS test which runs in quadratic time and 
-is deterministic with no false-positives.
+psuedoprime has been found for N < 2^64, this does not mean there is not a pseudoprime.
 
 =head3 Notes
 
 The strong Miller-Rabin test is implemented by is_strong_pseudoprime(). The strong Lucas-Selfridge test is implemented
 by is_strong_lucas_pseudoprime().
 
-We have implemented some optimizations.  We have an array of small primes to check all $n <= 257. According to 
-L<http://primes.utm.edu/prove/prove2_3.html> if $n < 9,080,191 is a both a base-31 and a base-73 strong pseudoprime,
- then $n is prime. If $n < 4,759,123,141 is a base-2, base-7 and base-61 strong pseudoprime, then $n is prime.
+We have implemented some optimizations.
+
+=over 4
+
+=item * We have an array of small primes to check all $n <= 257.
+
+=item * Does trial division for the first 16 primes via an even test and two 32-bit GCDs.
+
+=item * Does a limited set of deterministic Miller-Rabin tests.  According to
+L<http://primes.utm.edu/prove/prove2_3.html> if $n < 9,080,191 is a both a
+base-31 and a base-73 strong pseudoprime, then $n is prime.
+If $n < 4,759,123,141 is a base-2, base-7 and base-61 strong pseudoprime, then
+$n is prime.  These could be improved using either the better bases from
+L<http://miller-rabin.appspot.com/> or using a hash table of bases to reduce
+the number required to one for 32-bit and 3-4 for 64-bit inputs.
+
+=back
 
 =cut
 
