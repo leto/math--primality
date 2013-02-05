@@ -53,6 +53,22 @@ sub is_aks_prime($) {
   # http://ece.gmu.edu/courses/ECE746/project/F06_Project_resources/Salembier_Southerington_AKS.pdf
   # http://islab.oregonstate.edu/koc/ece575/04Project2/Halim-Chanleudfa/Report.pdf
   # http://fatphil.org/maths/AKS/
+  # http://www.cs.cmu.edu/afs/cs/user/mjs/ftp/thesis-program/2005/rotella.pdf
+  # http://www.cse.iitk.ac.in/users/manindra/algebra/primality_v6.pdf
+
+  # This code follows the Rotella 2005 implementation.  Unfortunately that
+  # paper was based on the original AKS algorithm, which is *very* slow.  His
+  # graphs show hundreds of seconds to test the primality of 3-digit numbers,
+  # with a C+GMP implementation.  We therefore expect this Perl+GMPz version
+  # to also be completely unusable due to performance, and should be surprised
+  # if it proves primality of a 5-digit prime in under an hour.
+  #
+  # The newer algorithm described in the primality_v6.pdf paper is much faster,
+  # though still totally impractical for any actual work without a *lot* of
+  # optimization work (see Crandall and Papadopoulos for example).  The
+  # variant algorithms of Bernstein become practical in terms of speed, though
+  # still do not match the speed of APR-CL or ECPP.
+
   my $n = GMP->new($_[0]);
   # Step 1 - check if $n = m^d for some m, d
   # if $n is a power then return 0
@@ -60,37 +76,39 @@ sub is_aks_prime($) {
     debug "fails step 1 of aks - $n is a perfect power";
     return 0;  # composite
   }
-    my $r = Math::GMPz->new(2);
-    my $logn = Rmpz_sizeinbase($n, 2);
-    my $limit = Math::GMPz->new($logn * $logn);
-    Rmpz_mul_ui($limit, $limit, 4);
+  my $r = Math::GMPz->new(2);
+  my $logn = Rmpz_sizeinbase($n, 2);
+  my $limit = Math::GMPz->new($logn * $logn);
+  Rmpz_mul_ui($limit, $limit, 4);
 
-    # Witness search
-
-    OUTERLOOP: while (Rmpz_cmp($r, $n) == -1) {
+  # Witness search
+  while (Rmpz_cmp($r, $n) == -1) {
     if(Rmpz_divisible_p($n, $r)) {
         debug "$n is divisible by $r\n";
         return 0;
     }
-
-    if(Rmpz_probab_prime_p($n, 5)) {
+    # We're following Rotella exactly.  If we weren't, then doing the
+    # order test followed by $r = next_prime($r) would make more sense.
+    if(Rmpz_probab_prime_p($r, 5)) {
         my $i = Math::GMPz->new(1);
         my $res = Math::GMPz->new(0);
 
-        INNERLOOP: for ( ; Rmpz_cmp($n, $limit) <= 0; Rmpz_add_ui($i, $i, 1)) {
+        my $failed = 0;
+        for ( ; Rmpz_cmp($i, $limit) <= 0; Rmpz_add_ui($i, $i, 1)) {
             Rmpz_powm($res, $n, $i, $r);
-                if (Rmpz_cmp_ui($res, 1) == 0) {
-                    last OUTERLOOP;
-                }
+            if (Rmpz_cmp_ui($res, 1) == 0) {
+                $failed = 1;
+                last;
+            }
         }
-
+        last if !$failed;
     }
     Rmpz_add_ui($r, $r, 1);
-    }
-    if (Rmpz_cmp($r, $n) == 0) {
-        debug "Found $n is prime while checking for r\n";
-        return 1;
-    }
+  }
+  if (Rmpz_cmp($r, $n) == 0) {
+      debug "Found $n is prime while checking for r\n";
+      return 1;
+  }
 
     # Polynomial check
     my $a;
