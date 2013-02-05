@@ -9,8 +9,8 @@ use Benchmark qw/:all/;
 my $count = shift || -2;
 
 #my($n, $exp) = (100000,9592);
-#my($n, $exp) = (1000000,78498);
-my($n, $exp) = (10000000,664579);
+my($n, $exp) = (1000000,78498);
+#my($n, $exp) = (10000000,664579);
 cmpthese($count,{
   'MP'           =>sub { die unless $exp == Math::Primality::prime_count($n); },
   'MPU default'  =>sub { die unless $exp == Math::Prime::Util::prime_count($n); },

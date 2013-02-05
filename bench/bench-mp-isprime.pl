@@ -21,5 +21,6 @@ sub test_at_digits {
   cmpthese($count,{
     'MP'   => sub { Math::Primality::is_prime($_) for @nums; },
     'MPU'  => sub { Math::Prime::Util::is_prob_prime($_) for @nums; },
+    'MPU GMP'  => sub { Math::Prime::Util::GMP::is_prob_prime($_) for @nums; },
   });
 }
