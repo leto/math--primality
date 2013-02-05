@@ -1,8 +1,15 @@
 =head1 Math::Primality Release Summaries
 
+=head2 0.09
+
+  Use two small GCDs in is_prime, making it faster for non-primes.
+
+  The AKS implementation was only doing trial division.  Fix to do the
+  actual AKS test.  Sadly this makes it incredibly slow.
+
 =head2 0.08
 
-  Use a GCD in the prime_count loop, making it much faster.
+  Use a small GCD in the prime_count loop, making it much faster.
 
 =head2 0.07
 
