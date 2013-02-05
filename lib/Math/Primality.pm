@@ -495,9 +495,22 @@ sub is_prime($) {
     $n = GMP->new("$n") unless ref($n) eq 'Math::GMPz';
 
     return 0 if Rmpz_cmp_ui($n, 2) == -1;
+
     return _is_small_prime($n) if Rmpz_cmp_ui($n, 257) == -1;
 
     return 0 if Rmpz_even_p($n);
+
+    # The following two gci_ui calls detect if the first few
+    # small primes are factors, which is a very quick test
+    # to filter out numbers with small factors
+
+    # On 64bit machines, we could use a single GCD with 16294579238595022365
+    # but to work on 32bit machines, we split that into 4127218095*3948078067
+    # 4127218095 = 3*5*7*11*13*17*19*23*37
+    return 0 unless 1 == Rmpz_gcd_ui($Math::GMPz::NULL, $n, 4127218095);
+
+    # 3948078067 = 29*31*41*43*47*53
+    return 0 unless 1 == Rmpz_gcd_ui($Math::GMPz::NULL, $n, 3948078067);
 
     if ( Rmpz_cmp_ui($n, 9_080_191) == -1 ) {
         return 0 unless is_strong_pseudoprime($n,31);
