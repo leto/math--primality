@@ -496,8 +496,11 @@ sub is_prime($) {
 
     return 0 if Rmpz_cmp_ui($n, 2) == -1;
     return _is_small_prime($n) if Rmpz_cmp_ui($n, 257) == -1;
-
+    # Divisible by 2?
     return 0 if Rmpz_even_p($n);
+    # 4127218095 = 3*5*7*11*13*17*19*23*37,  3948078067 = 29*31*41*43*47*53
+    return 0 unless 1 == Rmpz_gcd_ui($Math::GMPz::NULL, $n, 4127218095);
+    return 0 unless 1 == Rmpz_gcd_ui($Math::GMPz::NULL, $n, 3948078067);
 
     if ( Rmpz_cmp_ui($n, 9_080_191) == -1 ) {
         return 0 unless is_strong_pseudoprime($n,31);
