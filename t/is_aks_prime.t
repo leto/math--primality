@@ -1,12 +1,12 @@
 #!/usr/bin/env perl
 
 # We have to be careful with the inputs we give.  Unfortunately AKS is so
-# slow that we can't have it prove primality for any number >= 173, or
+# slow that we can't have it prove primality for any number >= 347, or
 # we'll take a *really* long time.
 
 use strict;
 use warnings;
-use Test::More tests => 111;
+use Test::More tests => 140;
 #use Carp::Always;
 
 use Math::GMPz qw/:mpz/;
@@ -36,7 +36,9 @@ for my $k (1..20) {
 
 my @small_primes = qw/
   5   7  11  13  17  19  23  29  31  37  41  43  47  53  59  61  67  71  73
- 79  83  89  97 101 103 107 109 113 127 131 137 139 149 151 157 163 167
+ 79  83  89  97 101 103 107 109 113 127 131 137 139 149 151 157 163 167 173
+179 181 191 193 197 199 211 223 227 229 233 239 241 251 257 263 269 271 277
+281 283 293 307 311 313 317 331 337 
 /;
 
 map { ok(is_aks_prime($_), "$_ is an AKS prime") } @small_primes;
