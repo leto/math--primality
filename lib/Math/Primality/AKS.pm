@@ -128,22 +128,22 @@ sub is_aks_prime($) {
     my $intr = Rmpz_get_ui($r);
     debug "Running poly check, r = $intr  polylimit = $polylimit\n";
 
+    my $final_size = Math::GMPz->new(0);
+    Rmpz_mod($final_size, $n, $r);
+    my $compare = Math::Primality::BigPolynomial->new();
+    $compare->setCoef(Math::GMPz->new(1), $final_size);
+
     for(my $a = 1; Rmpz_cmp_ui($polylimit, $a) >= 0; $a++) {
         debug "Checking at $a / $polylimit\n";
-        my $final_size = Math::GMPz->new(0);
-        Rmpz_mod($final_size, $n, $r);
-        my $compare = Math::Primality::BigPolynomial->new(Rmpz_get_ui($final_size));
-        $compare->setCoef(Math::GMPz->new(1), $final_size);
-        $compare->setCoef(Math::GMPz->new($a), 0);
-        my $res = Math::Primality::BigPolynomial->new($intr);
-        my $base = Math::Primality::BigPolynomial->new(1);
-        $base->setCoef(Math::GMPz->new(0), $a);
-        $base->setCoef(Math::GMPz->new(1), 1);
+        my $poly = Math::Primality::BigPolynomial->new( [$a, 1 ]);
+        #print "Start:   ", $poly->string, "\n";
+        $poly->powmod($n, $n, $intr);
+        #print "Finish:  ", $poly->string, "\n";
 
-        Math::Primality::BigPolynomial::mpz_poly_mod_power($res, $base, $n, $n, $intr);
+        $compare->setCoef($a, 0);
+        #print "Compare: ", $compare->string, "\n";
 
-
-        if($res->isEqual($compare)) {
+        if ( ! $poly->isEqual($compare) ) {
             debug "Found not prime at $a\n";
             return 0;
         }
