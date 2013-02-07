@@ -14,21 +14,22 @@ Math::Primality::BigPolynomials - Polynomials with BigInts
 
 
 sub new {
-    my $self              = {};
-    my $class             = shift;
-    my $construction_junk = shift;
+    my $self   = {};
+    my $class  = shift;
+    my $init   = shift;
 
     $self->{ZERO} = Math::GMPz->new(0);
 
-    if ($construction_junk) {
-        my $type = ref $construction_junk;
+    if ($init) {
+        my $type = ref $init;
         if ( $type eq 'ARRAY' ) {
-            $self->{COEF} = $construction_junk;
+            die "Initialization array must be non-empty" unless @$init > 1;
+            $self->{COEF} = $init;
         } elsif ($type eq 'Math::Primality::BigPolynomial') {
-            copy($self, $construction_junk);
+            $self->{COEF} = [ map { Math::GMPz->new($_) } $init->coef ];
         } else {
             my $a = [];
-            for ( my $i = 0 ; $i < $construction_junk ; $i++ ) {
+            for ( my $i = 0 ; $i < $init ; $i++ ) {
                 push @$a, $self->{ZERO};
             }
             $self->{COEF} = $a;
@@ -43,10 +44,7 @@ sub new {
 
 sub copy {
   my $self = shift;
-  my $other = shift;
-  die "Copy called with a non-object" unless ref($other) eq 'Math::Primality::BigPolynomial';
-  $self->{COEF} = [ map { Math::GMPz->new($_) } @{$other->{COEF}} ];
-  1;
+  return Math::Primality::BigPolynomial->new($self);
 }
 
 sub string {
@@ -135,49 +133,17 @@ sub mulmod {
     my @xset = map { Rmpz_sgn($_) > 0 } @x;
     my @yset = map { Rmpz_sgn($_) > 0 } @y;
 
-    $self->clear();
+    my @res = map { Math::GMPz->new(0) } 0 .. $polymod-1;
 
-    # We use these in the loop.
-    my $sum  = Math::GMPz->new(0);
-    my $temp = Math::GMPz->new(0);
-
-    for ( my $k = 0 ; $k < $polymod ; $k++ ) {
-        Rmpz_set_ui($sum, 0);
-        for ( my $i = 0 ; $i <= $k ; $i++ ) {
-            # sum += x[i] * (y[k-i] + y[k+polymod-i])
-            # it turns out one, two, or three of the terms above are typically
-            # zero, so only do as much work as needed.
-            next unless $xset[$i];
-            if ($yset[$k-$i]) {
-              if ($yset[$k+$polymod-$i]) {
-                Rmpz_add( $temp, $y[$k-$i], $y[$k+$polymod-$i] );
-                Rmpz_addmul( $sum, $x[$i], $temp );
-              } else {
-                Rmpz_addmul( $sum, $x[$i], $y[$k-$i] );
-              }
-            } else {
-              if ($yset[$k+$polymod-$i]) {
-                Rmpz_addmul( $sum, $x[$i], $y[$k+$polymod-$i] );
-              } else {
-                # Nothing
-              }
-            }
-        }
-
-        # Only do this loop if there are any non-zero components to multiply.
-        if ( ($k+1) <= $xdeg ) {
-            for ( my $i = $k+1 ; $i <= ( $k + $polymod ) ; $i++ ) {
-                next unless $xset[$i] && $yset[$k+$polymod-$i];
-                Rmpz_addmul( $sum, $x[$i], $y[$k+$polymod-$i] );
-            }
-        }
-
-        Rmpz_mod( $temp, $sum, $mod );
-        $self->setCoef( $temp, $k );
-
-        last if $k > $maxdeg && $sum == 0;
+    for (my $ix = 0; $ix <= $xdeg; $ix++) {
+      next unless $xset[$ix];
+      for (my $iy = 0; $iy <= $ydeg; $iy++) {
+        next unless $yset[$iy];
+        Rmpz_addmul( $res[ ($ix + $iy) % $polymod ], $x[$ix], $y[$iy] );
+      }
     }
 
+    $self->{COEF} = [ map { $_ % $mod } @res ];
     $self->compact();
 }
 
