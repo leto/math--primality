@@ -56,18 +56,15 @@ sub is_aks_prime($) {
   # http://www.cs.cmu.edu/afs/cs/user/mjs/ftp/thesis-program/2005/rotella.pdf
   # http://www.cse.iitk.ac.in/users/manindra/algebra/primality_v6.pdf
 
-  # This code follows the Rotella 2005 implementation.  Unfortunately that
-  # paper was based on the original AKS algorithm, which is *very* slow.  His
-  # graphs show hundreds of seconds to test the primality of 3-digit numbers,
-  # with a C+GMP implementation.  We therefore expect this Perl+GMPz version
-  # to also be completely unusable due to performance, and should be surprised
-  # if it proves primality of a 5-digit prime in under an hour.
+  # The previous version of this code followed the Rotella 2005 implementation,
+  # which was based on the original AKS algorithm, hence *very* slow.  His
+  # graphs show hundreds of seconds to test the primality of 3-digit numbers
+  # with a C+GMP implementation.
   #
-  # The newer algorithm described in the primality_v6.pdf paper is much faster,
-  # though still totally impractical for any actual work without a *lot* of
-  # optimization work (see Crandall and Papadopoulos for example).  The
-  # variant algorithms of Bernstein become practical in terms of speed, though
-  # still do not match the speed of APR-CL or ECPP.
+  # The current code is done using the v6 paper so is much faster, though
+  # still impractically slow compared to other methods.  See the paper of
+  # Crandall and Papadopoulos as well as Bernstein's papers for more ideas.
+  # In particular, the current bottleneck is polynomial multiplication.
 
   my $n = GMP->new($_[0]);
   # Step 0 - check that n is a positive integer >= 2;
@@ -126,7 +123,7 @@ sub is_aks_prime($) {
     my $polylimit = $logn * $sqrt_phi_r + $plus_one;
 
     my $intr = Rmpz_get_ui($r);
-    debug "Running poly check, r = $intr  polylimit = $polylimit\n";
+    debug "Running poly check for $n with r = $intr polylimit = $polylimit\n";
 
     my $final_size = Math::GMPz->new(0);
     Rmpz_mod($final_size, $n, $r);
@@ -134,7 +131,7 @@ sub is_aks_prime($) {
     $compare->setCoef(Math::GMPz->new(1), $final_size);
 
     for(my $a = 1; Rmpz_cmp_ui($polylimit, $a) >= 0; $a++) {
-        debug "Checking at $a / $polylimit\n";
+        debug "  checking at $a / $polylimit\n";
         my $poly = Math::Primality::BigPolynomial->new( [$a, 1 ]);
         #print "Start:   ", $poly->string, "\n";
         $poly->powmod($n, $n, $intr);
@@ -144,10 +141,11 @@ sub is_aks_prime($) {
         #print "Compare: ", $compare->string, "\n";
 
         if ( ! $poly->isEqual($compare) ) {
-            debug "Found not prime at $a\n";
+            debug "Found $n not prime at $a\n";
             return 0;
         }
     }
+    debug "Found $n prime after checking $polylimit polynomials\n";
     return 1;
 }
 
