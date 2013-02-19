@@ -510,7 +510,7 @@ sub is_prime($) {
     return 0 if Rmpz_cmp_ui($n, 2) == -1;
 
     # is it a small prime? (<=257)
-    return _is_small_prime($n) if Rmpz_cmp_ui($n, 257) == -1;
+    return _is_small_prime($n) if Rmpz_cmp_ui($n, 257) <= 0;
 
     # Divisible by 2?
     return 0 if Rmpz_even_p($n);

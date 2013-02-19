@@ -1,12 +1,16 @@
 #!/usr/bin/env perl
 
 # We have to be careful with the inputs we give.  Unfortunately AKS is so
-# slow that we can't have it prove primality for any number >= 347, or
-# we'll take a *really* long time.
+# slow that we can't have it actually prove primality using the a,n,r
+# polynomial tests or we'll take a *really* long time.  With the current
+# implementation including the sqrt test this means < 85991.
+
+# First number to make it to poly test and succeed: 85991
+# First number to make it to poly test and fail:    95477
 
 use strict;
 use warnings;
-use Test::More tests => 140;
+use Test::More tests => 141;
 #use Carp::Always;
 
 use Math::GMPz qw/:mpz/;
@@ -66,3 +70,4 @@ map { ok(!is_aks_prime($_), "Pseudoprime (base 2) $_ is not an AKS prime" ) } qw
  4681 5461 6601 7957 8321
 /;
 
+ok(!is_aks_prime(95477), "95477 is not prime");

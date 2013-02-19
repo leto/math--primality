@@ -7,6 +7,10 @@
   The AKS implementation was only doing trial division.  Fix to do the
   actual AKS test.  Sadly this makes it incredibly slow.
 
+  Change AKS to the latest standard implementation (v6 of the paper).
+
+  Rewrite big parts of BigPolynomial.
+
 =head2 0.08
 
   Use a small GCD in the prime_count loop, making it much faster.
