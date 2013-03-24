@@ -215,6 +215,16 @@ sub is_strong_pseudoprime($;$)
     $base   = GMP->new("$base") if ref($base) ne 'Math::GMPz';
     $n      = GMP->new("$n")    if ref($n)    ne 'Math::GMPz';
 
+    return 1 if ($n == $base);
+
+    if ($base > $n) {
+        $base %= $n;
+    }
+
+    if ($base <= 1 || ($base == $n-1)) {
+        return 1;
+    }
+
     # unnecessary but faster if $n is even
     my $cmp = _check_two_and_even($n);
     return $cmp if $cmp != 2;

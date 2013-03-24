@@ -14,9 +14,9 @@ ok (Math::Primality::_check_two_and_even(Math::GMPz->new(2)) == 1, '_check_two_a
 ok (Math::Primality::_check_two_and_even(Math::GMPz->new(20)) == 0, '_check_two_and_even(20) should return 0');
 ok (Math::Primality::_check_two_and_even(Math::GMPz->new(1)) == 0, '_check_two_and_even(1) should return 0');
 ### test is_strong_pseudoprime ###
-ok(!is_strong_pseudoprime(-1),'-1 is not a spsp' );
+ok( is_strong_pseudoprime(-1),'-1 is a spsp' );
 ok(!is_strong_pseudoprime(0),'0 is not a spsp' );
-ok(!is_strong_pseudoprime(1),'1 is not a spsp' );
+ok( is_strong_pseudoprime(1),'1 is a spsp' );
 ok( is_strong_pseudoprime(2,3),'2 is a spsp(3)' );
 ok( is_strong_pseudoprime(3),'3 is a spsp'  );
 ok(!is_strong_pseudoprime(4),'4 is not a spsp' );
@@ -27,7 +27,7 @@ is( is_strong_pseudoprime( 3, 3), 1, "spsp( 3, 3)");
 is( is_strong_pseudoprime( 11, 11), 1, "spsp( 11, 11)");
 is( is_strong_pseudoprime( 89, 5785), 1, "spsp( 89, 5785)");
 is( is_strong_pseudoprime(257, 6168), 1, "spsp(257, 6168)");
-is( is_strong_pseudoprime(367, 367), 1, "spsp(367, 367)");
+is( is_strong_pseudoprime(368, 367), 1, "spsp(367, 367)");
 is( is_strong_pseudoprime(367, 1101), 1, "spsp(367, 1101)");
 is( is_strong_pseudoprime(49001, 921211727), 0, "spsp(49001, 921211727)");
 is( is_strong_pseudoprime( 331, 921211727), 1, "spsp( 331, 921211727)");
