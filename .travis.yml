@@ -9,7 +9,7 @@ perl:
 
 before_install:
     - sudo apt-get update -q
-    - sudo apt-get install -t libgmp-dev
+    - sudo apt-get install -y libgmp-dev
     - cpanm Test::Pod # optional dependency
 
 install:
